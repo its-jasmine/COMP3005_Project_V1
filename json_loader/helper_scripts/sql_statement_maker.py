@@ -19,7 +19,7 @@ def convert_json_to_sql(file_path):
     return statements
 
 # Path to the JSON file
-file_path = "statsbomb_data/competitions.json"  # Replace 'your_file.json' with the actual file path
+file_path = "../statsbomb_data/competitions.json"  # Replace 'your_file.json' with the actual file path
 
 # Convert JSON data to SQL statements
 sql_statements = convert_json_to_sql(file_path)

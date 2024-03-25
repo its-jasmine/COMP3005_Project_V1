@@ -32,7 +32,7 @@ def main():
             match_id = line.strip() # strip() removes the newline character at the end of each line
             file_url = f'https://raw.githubusercontent.com/statsbomb/open-data/0067cae166a56aa80b2ef18f61e16158d6a7359a/data/lineups/{match_id}.json'
             # Local path where you want to save the file
-            local_file_path = f'statsbomb_data/lineups/{match_id}.json'
+            local_file_path = f'../statsbomb_data/lineups/{match_id}.json'
 
             # Download the file
             download_file(file_url, local_file_path)

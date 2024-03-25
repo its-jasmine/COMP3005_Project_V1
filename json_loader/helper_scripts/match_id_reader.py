@@ -26,10 +26,10 @@ def write_values_to_file(values, file_path):
 def main():
 
     paths = [
-        "statsbomb_data/matches/2/44.json",
-        "statsbomb_data/matches/11/42.json",
-        "statsbomb_data/matches/11/90.json",
-        "statsbomb_data/matches/11/4.json"
+        "../statsbomb_data/matches/2/44.json",
+        "../statsbomb_data/matches/11/42.json",
+        "../statsbomb_data/matches/11/90.json",
+        "../statsbomb_data/matches/11/4.json"
     ]
 
     target_key = "match_id"
