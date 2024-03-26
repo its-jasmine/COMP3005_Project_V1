@@ -1,9 +1,10 @@
 import json
 
+# TODO CREATE TABLE
 def generate_insert_statement(table_name, data):
     columns = ', '.join(data.keys()) # TODO we will hard code these values
     values = ', '.join(map(repr, data.values()))
-    return f"INSERT INTO {table_name} ({columns}) VALUES ({values});"
+    return f"INSERT INTO {table_name} ({columns}) VALUES ({values});" # TODO add IF NOT EXISTS
 
 def convert_json_to_sql(file_path):
     with open(file_path, 'r') as file:
