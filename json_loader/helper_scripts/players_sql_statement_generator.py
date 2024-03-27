@@ -36,12 +36,18 @@ def convert_json_to_sql(file_path):
     return statements
 
 # Path to the JSON file
-file_path = "../statsbomb_data/lineups/15946.json"  # Replace 'your_file.json' with the actual file path
+file_path = "output"  # Replace 'your_file.json' with the actual file path
 
 # Convert JSON data to SQL statements
 sql_statements = []
 sql_statements.append(generate_create_statement())
-sql_statements += convert_json_to_sql(file_path)
+
+with open(file_path, 'r') as file:
+    file.seek(0)  # Move the file pointer back to the beginning
+    for line in file:
+
+        match_id = line.strip() # strip() removes the newline character at the end of each line
+        sql_statements += convert_json_to_sql(f"../statsbomb_data/lineups/{match_id}.json")
 
 # Print SQL statements
 for statement in sql_statements:
