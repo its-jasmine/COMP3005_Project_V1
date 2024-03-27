@@ -7,7 +7,7 @@ def generate_create_statement():
     return "CREATE TABLE IF NOT EXISTS players \n" \
            "(player_id       INTEGER NOT NULL, \n" \
            "player_name     VARCHAR(255) NOT NULL,  \n" \
-           "player_nickname VARCHAR(255) NOT NULL, \n" \
+           "player_nickname VARCHAR(255), \n" \
            "jersey_number   INTEGER NOT NULL, \n" \
            "country         VARCHAR(255) NOT NULL);"
 
