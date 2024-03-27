@@ -45,4 +45,5 @@ sql_statements += convert_json_to_sql(file_path)
 
 # Print SQL statements
 for statement in sql_statements:
+    statement = statement.replace("None", "NULL")
     print(statement)
