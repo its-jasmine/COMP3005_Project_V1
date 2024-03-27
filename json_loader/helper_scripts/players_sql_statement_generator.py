@@ -16,9 +16,9 @@ def generate_insert_statement(table_name, data):
     for i in range(len(data['lineup'])):
         del data['lineup'][i]['cards']
         del data['lineup'][i]['positions']
+        data['lineup'][i]['country'] = data['lineup'][i]['country']['name']
 
         columns = ', '.join(data['lineup'][i].keys()) # TODO we will hard code these values
-        # TODO modify to only add country name, not whole object
         all_values = data['lineup'][i].values()
         values = ', '.join(map(repr, all_values))
         statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + ";") # TODO add IF NOT EXISTS
