@@ -18,7 +18,7 @@ def generate_insert_statement(table_name, data):
         del data['lineup'][i]['positions']
         data['lineup'][i]['country'] = data['lineup'][i]['country']['name']
 
-        columns = ', '.join(data['lineup'][i].keys()) # TODO we will hard code these values
+        columns = ', '.join(columns_names) 
         all_values = data['lineup'][i].values()
         values = ', '.join(map(repr, all_values))
         statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + " ON CONFLICT (player_id) DO NOTHING;") # TODO add IF NOT EXISTS
