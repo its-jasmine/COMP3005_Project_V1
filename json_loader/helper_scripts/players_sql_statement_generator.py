@@ -5,7 +5,7 @@ columns_names = ["player_id", "player_name", "player_nickname", "jersey_number",
 # TODO CREATE TABLE
 def generate_create_statement():
     return "CREATE TABLE IF NOT EXISTS players \n" \
-           "(player_id       PRIMARY KEY INTEGER NOT NULL, \n" \
+           "(player_id       INTEGER NOT NULL PRIMARY KEY, \n" \
            "player_name     VARCHAR(255) NOT NULL,  \n" \
            "player_nickname VARCHAR(255), \n" \
            "jersey_number   INTEGER NOT NULL, \n" \
