@@ -1,4 +1,5 @@
 import json
+from utility import match_id_list
 
 columns_names = ["player_id", "player_name", "player_nickname", "jersey_number", "country"]
 
@@ -42,16 +43,12 @@ file_path = "output"  # Replace 'your_file.json' with the actual file path
 sql_statements = []
 sql_statements.append(generate_create_statement())
 
-with open(file_path, 'r') as file:
-    file.seek(0)  # Move the file pointer back to the beginning
-    for line in file:
-
-        match_id = line.strip() # strip() removes the newline character at the end of each line
-        sql_statements += convert_json_to_sql(f"../statsbomb_data/lineups/{match_id}.json")
+for match_id in match_id_list:
+    sql_statements += convert_json_to_sql(f"../statsbomb_data/lineups/{match_id}.json")
 
 # Print SQL statements
 
 sql_statements = set(sql_statements) # deduplicate
 for statement in sql_statements:
     statement = statement.replace("None", "NULL")
-    #print(statement)
+    print(statement)
