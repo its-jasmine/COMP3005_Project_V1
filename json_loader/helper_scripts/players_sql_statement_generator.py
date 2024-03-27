@@ -50,6 +50,8 @@ with open(file_path, 'r') as file:
         sql_statements += convert_json_to_sql(f"../statsbomb_data/lineups/{match_id}.json")
 
 # Print SQL statements
+
+sql_statements = set(sql_statements) # deduplicate
 for statement in sql_statements:
     statement = statement.replace("None", "NULL")
-    print(statement)
+    #print(statement)
