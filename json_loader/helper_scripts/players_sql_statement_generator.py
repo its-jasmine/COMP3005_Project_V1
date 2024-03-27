@@ -5,7 +5,7 @@ columns_names = ["player_id", "player_name", "player_nickname", "jersey_number",
 # TODO CREATE TABLE
 def generate_create_statement():
     return "CREATE TABLE IF NOT EXISTS players \n" \
-           "(player_id       INTEGER NOT NULL, \n" \
+           "(player_id       PRIMARY KEY INTEGER NOT NULL, \n" \
            "player_name     VARCHAR(255) NOT NULL,  \n" \
            "player_nickname VARCHAR(255), \n" \
            "jersey_number   INTEGER NOT NULL, \n" \
@@ -21,7 +21,7 @@ def generate_insert_statement(table_name, data):
         columns = ', '.join(data['lineup'][i].keys()) # TODO we will hard code these values
         all_values = data['lineup'][i].values()
         values = ', '.join(map(repr, all_values))
-        statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + ";") # TODO add IF NOT EXISTS
+        statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + " ON CONFLICT (player_id) DO NOTHING;") # TODO add IF NOT EXISTS
     return statements
 
 def convert_json_to_sql(file_path):
