@@ -37,7 +37,7 @@ def generate_insert_statement(table_name, data):
     return statements
 
 def convert_json_to_sql(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         json_data = json.load(file)
 
     statements = []
