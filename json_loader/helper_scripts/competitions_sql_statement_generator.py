@@ -6,17 +6,27 @@ def generate_create_statement():
            "season_id           INTEGER NOT NULL,  \n" \
            "competition_name    VARCHAR(255) NOT NULL, \n" \
            "season_name         VARCHAR(255) NOT NULL, \n" \
+           "competition_gender  VARCHAR(255) NOT NULL, \n" \
            "country             VARCHAR(255) NOT NULL, \n" \
            "PRIMARY KEY (competition_id, season_id));"
 
+def get_competition_gender(comp_id, season_id):
+    with open("../statsbomb_data/competitions.json", 'r') as file:
+        json_data = json.load(file)
+    
+    for i in range(len(json_data)):
+        if json_data[i]['competition_id'] == comp_id and json_data[i]['season_id'] == season_id:
+            return json_data[i]['competition_gender']
+
 def generate_insert_statement(table_name, data):
     statements = []
-    for i in range(len(data)):
+    for _ in range(len(data)):
         new_values = {}
         new_values['competition_id'] = data['competition']['competition_id']
         new_values['season_id'] = data['season']['season_id']
         new_values['competition_name'] = data['competition']['competition_name']
         new_values['season_name'] = data['season']['season_name']
+        new_values['competition_gender'] = get_competition_gender(new_values.get('competition_id'), new_values.get('season_id'))
         new_values['country'] = data['competition']['country_name']
 
         columns = ', '.join(new_values.keys()) 
