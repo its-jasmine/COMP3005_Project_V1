@@ -1,17 +1,29 @@
 import json
 
-# TODO CREATE TABLE
+def generate_create_statement():
+    return "CREATE TABLE IF NOT EXISTS competitions \n" \
+           "(competition_id     INTEGER NOT NULL, \n" \
+           "season_id           INTEGER NOT NULL,  \n" \
+           "competition_name    VARCHAR(255) NOT NULL, \n" \
+           "season_name         VARCHAR(255) NOT NULL, \n" \
+           "country             VARCHAR(255) NOT NULL, \n" \
+           "PRIMARY KEY (competition_id, season_id));"
+
 def generate_insert_statement(table_name, data):
     statements = []
-    for i in range(len(data['lineup'])):
-        del data['lineup'][i]['cards']
-        del data['lineup'][i]['positions']
+    for i in range(len(data)):
+        new_values = {}
+        new_values['competition_id'] = data['competition']['competition_id']
+        new_values['season_id'] = data['season']['season_id']
+        new_values['competition_name'] = data['competition']['competition_name']
+        new_values['season_name'] = data['season']['season_name']
+        new_values['country'] = data['competition']['country_name']
 
-        columns = ', '.join(data['lineup'][i].keys()) # TODO we will hard code these values
-        # TODO modify to only add country name, not whole object
-        all_values = data['lineup'][i].values()
+        columns = ', '.join(new_values.keys()) 
+
+        all_values = new_values.values()
         values = ', '.join(map(repr, all_values))
-        statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})") # TODO add IF NOT EXISTS
+        statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values});")
     return statements
 
 def convert_json_to_sql(file_path):
@@ -20,17 +32,22 @@ def convert_json_to_sql(file_path):
 
     statements = []
     for row in json_data:
-        row.pop("team_id", None)
-        row.pop("team_name", None)
-        statements += (generate_insert_statement("players", row))  # Replace 'YourTableName' with your actual table name
+        data = {}
+        data['competition'] = row.get('competition')
+        data['season'] = row.get('season')
+        statements += (generate_insert_statement("competitions", data))
     return statements
 
-# Path to the JSON file
-file_path = "../statsbomb_data/lineups/15946.json"  # Replace 'your_file.json' with the actual file path
 
-# Convert JSON data to SQL statements
-sql_statements = convert_json_to_sql(file_path)
+sql_statements = []
+sql_statements.append(generate_create_statement())
 
-# Print SQL statements
+sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/2/44.json")
+sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/11/4.json")
+sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/11/42.json")
+sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/11/90.json")
+
+sql_statements = set(sql_statements)
+
 for statement in sql_statements:
     print(statement)

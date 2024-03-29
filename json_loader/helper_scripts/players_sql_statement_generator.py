@@ -3,7 +3,6 @@ from utility import match_id_list
 
 columns_names = ["player_id", "player_name", "player_nickname", "jersey_number", "country"]
 
-# TODO CREATE TABLE
 def generate_create_statement():
     return "CREATE TABLE IF NOT EXISTS players \n" \
            "(player_id      INTEGER NOT NULL PRIMARY KEY, \n" \
