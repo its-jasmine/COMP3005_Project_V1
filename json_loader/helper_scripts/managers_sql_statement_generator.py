@@ -15,14 +15,7 @@ def generate_insert_statement(table_name, data):
     statements = []
     new_values = {}
 
-    # if len(data['managers']) != 1:
-    #     print('ERROR ERROR ERROR')
-    #     print(data)
-
     for i in range(len(data['managers'])):
-        # if data['managers'][i]['id'] == 187:
-        #     print('187')
-        #     print(data)
         new_values['manager_id'] = data['managers'][i]['id']
         new_values['manager_name'] = data['managers'][i]['name']
         new_values['manager_nickname'] = data['managers'][i]['nickname']
