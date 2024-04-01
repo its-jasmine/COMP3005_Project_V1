@@ -1,5 +1,5 @@
 import json
-from utility import match_id_list
+from utility import match_id_list, execute_query
 
 columns_names = ["player_id", "player_name", "player_nickname", "jersey_number", "country"]
 
@@ -42,13 +42,16 @@ file_path = "output"  # Replace 'your_file.json' with the actual file path
 # Convert JSON data to SQL statements
 sql_statements = []
 sql_statements.append(generate_create_statement())
+print(generate_create_statement())
 
 for match_id in match_id_list:
     sql_statements += convert_json_to_sql(f"../statsbomb_data/lineups/{match_id}.json")
 
 # Print SQL statements
 
+execute_query(generate_create_statement())
 sql_statements = set(sql_statements) # deduplicate
 for statement in sql_statements:
     statement = statement.replace("None", "NULL")
-    print(statement)
+    execute_query(statement)
+    # print(statement)
