@@ -103,6 +103,32 @@ def generate_create_statement_tactical_shift():
            "formation    INTEGER,  \n" \
            "lineup_id    INTEGER);"
 
+def generate_create_statement_50_50():
+    return "CREATE TABLE IF NOT EXISTS fiftyfifty \n" \
+           "(event_id          VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+           "outcome            VARCHAR(255),  \n" \
+           "counterpress       BOOLEAN);"
+
+def generate_create_statement_block():
+    return "CREATE TABLE IF NOT EXISTS block \n" \
+           "(event_id       VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+           "deflection      BOOLEAN,  \n" \
+           "offensive       BOOLEAN,  \n" \
+           "save_block      BOOLEAN,  \n" \
+           "counterpress    BOOLEAN);"
+
+def generate_create_statement_interception():
+    return "CREATE TABLE IF NOT EXISTS block \n" \
+           "(event_id          VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+           "outcome            VARCHAR(255) NOT NULL);"
+
+def generate_create_statement_bad_behaviour():
+    return "CREATE TABLE IF NOT EXISTS block \n" \
+           "(event_id        VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+           "card             VARCHAR(255) NOT NULL);"
+def generate_create_statement_player_off(): # TODO confirm whether including?
+    return ""
+
 # match_id = name of file
 # I'm confused
 def generate_insert_statement_events(table_name, data, match_id):
@@ -153,33 +179,48 @@ def generate_insert_statement_events(table_name, data, match_id):
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;") # TODO add IF NOT EXISTS
-    
-    if "ball_recovery" in data.keys():
-        generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
 
-    if "dribble" in data.keys():
-        generate_insert_statement_dribble(data["dribble"], data["id"])
+    data_keys = data.keys()
+    # if "ball_recovery" in data_keys:
+    #     generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
+    #
+    # if "dribble" in data_keys:
+    #     generate_insert_statement_dribble(data["dribble"], data["id"])
+    #
+    # if "shot" in data_keys:
+    #     generate_insert_statement_shot(data["shot"], data["id"])
+    #
+    # if "injury_stoppage" in data_keys:
+    #     generate_insert_statement_injury_stoppage(data["injury_stoppage"], data["id"])
+    #
+    # if "ball_receipt" in data_keys:
+    #     generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
 
-    if "shot" in data.keys():
-        generate_insert_statement_shot(data["shot"], data["id"])
+    # if "50_50" in data_keys:
+    #     generate_insert_statement_50_50(data, data["id"])
 
-    if "injury_stoppage" in data.keys():
-        generate_insert_statement_injury_stoppage(data["injury_stoppage"], data["id"])
+    # if "block" in data_keys:
+    #     generate_insert_statement_block(data, data["id"])
 
-    if "ball_receipt" in data.keys():
-        generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
+    # if "interception" in data_keys:
+    #     generate_insert_statement_interception(data["interception"], data["id"])
+    # if "bad_behaviour" in data_keys:
+    #     generate_insert_statement_bad_behaviour(data["bad_behaviour"], data["id"])
+    if data["type"]["name"] == "Player Off":
+        generate_insert_statement_player_off(data, data["id"])
 
-    if data["type"]["name"] == "Substitution":
-        try:
-            generate_insert_statement_substitution(data["substitution"], data["id"])
-        except KeyError:
-            generate_insert_statement_substitution(data["stta"], data["id"])
 
-    if data["type"]["name"] == "Starting XI":
-        generate_insert_statement_starting_xi(data["tactics"], data["id"])
-
-    if data["type"]["name"] == "Tactical Shift":
-        generate_insert_statement_tactical_shift(data["tactics"], data["id"])
+    # if data["type"]["name"] == "Substitution":
+    #     try:
+    #         generate_insert_statement_substitution(data["substitution"], data["id"])
+    #     except KeyError:
+    #         generate_insert_statement_substitution(data["stta"], data["id"])
+    #
+    # if data["type"]["name"] == "Starting XI":
+    #     generate_insert_statement_starting_xi(data["tactics"], data["id"])
+    #
+    # if data["type"]["name"] == "Tactical Shift":
+    #     generate_insert_statement_tactical_shift(data["tactics"], data["id"])
     
     return statements
 
@@ -315,22 +356,89 @@ def generate_insert_statement_tactical_shift(data, event_id):
     with open("../insert_statements/tactical_shift.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
+def generate_insert_statement_50_50(data, event_id):
+    columns_names = ["event_id", "outcome", "counterpress"]
+    values = []
+    values.append(event_id)
+    values.append(data["50_50"]["outcome"]["name"]) # just including name rather than id
 
-def generate_create_statement_50_50():
-    return "" # TODO
+    try:
+        values.append(data["counterpress"]) #TODO docs mention this, but most objects don't seem to have it? setting as NULL for now
+    except KeyError:
+        values.append("NULL")
 
-def generate_create_statement_block():
-    return "" # TODO
+    columns = ', '.join(columns_names)
+    values = ', '.join(map(repr, values))
+    statement = f"INSERT INTO fiftyfifty ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;" # table name can't start with numbers, writing as words
+    print(statement)
+    with open("../insert_statements/5050.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
-def generate_create_statement_interception():
-    return "" # TODO
+def generate_insert_statement_block(data, event_id):
+    columns_names = ["event_id", "deflection", "offensive", "save_block",  "counterpress"]
+    values = []
+    values.append(event_id)
 
-def generate_create_statement_bad_behaviour():
-    return "" # TODO
+    for name in columns_names[1:4]:
+        try:
+            values.append(data["block"][name])
+        except KeyError:
+            values.append("NULL")
+    try:
+        values.append(data["counterpress"])  # TODO docs mention this, but most objects don't seem to have it? setting as NULL for now
+    except KeyError:
+        values.append("NULL")
+
+    columns = ', '.join(columns_names)
+    values = ', '.join(map(repr, values))
+    statement = f"INSERT INTO block ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    print(statement)
+    with open("../insert_statements/block.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 
-def generate_create_statement_player_off():
-    return ""  # TODO
+def generate_insert_statement_interception(data, event_id):
+    columns_names = ["event_id", "outcome"]
+    values = []
+    values.append(event_id)
+
+    values.append(data["outcome"]["name"])
+    columns = ', '.join(columns_names)
+    values = ', '.join(map(repr, values))
+    statement = f"INSERT INTO interception ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    print(statement)
+    with open("../insert_statements/interception.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
+
+def generate_insert_statement_bad_behaviour(data, event_id):
+    columns_names = ["event_id", "card"]
+    values = []
+    values.append(event_id)
+
+    values.append(data["card"]["name"])
+    columns = ', '.join(columns_names)
+    values = ', '.join(map(repr, values))
+    statement = f"INSERT INTO bad_behaviour ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    print(statement)
+    with open("../insert_statements/bad_behaviour.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
+
+def generate_insert_statement_player_off(data, event_id): # TODO maybe remove? permanent is not found on event level, and theres never a player_off key with addition attributes
+    columns_names = ["event_id", "permanent"]
+    values = []
+    values.append(event_id)
+
+    try:
+        values.append(data["permanent"])
+    except KeyError:
+        values.append("NULL")
+
+    columns = ', '.join(columns_names)
+    values = ', '.join(map(repr, values))
+    statement = f"INSERT INTO player_off ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    print(statement)
+    with open("../insert_statements/player_off.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 def generate_create_statement_half_end():
     return ""  # TODO
@@ -358,13 +466,13 @@ sql_statements.append(generate_create_statement())
 directory = "../statsbomb_data/events/"
 files = os.listdir(directory)
 
-# for file in files:
-#     sql_statements += convert_json_to_sql(file)
+for file in files:
+    sql_statements += convert_json_to_sql_events(file)
 
-sql_statements += convert_json_to_sql_events(files[0]) #just to test 
+#sql_statements += convert_json_to_sql_events("303473.json") #just to test
 
 sql_statements = set(sql_statements) # deduplicate
 for statement in sql_statements:
     statement = statement.replace("None", "NULL")
     # execute_query(statement)
-    # print(statement)
+    #print(statement)
