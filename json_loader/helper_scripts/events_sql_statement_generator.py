@@ -316,6 +316,32 @@ def generate_insert_statement_tactical_shift(data, event_id):
         file.write(statement + "\n")
 
 
+def generate_create_statement_50_50():
+    return "" # TODO
+
+def generate_create_statement_block():
+    return "" # TODO
+
+def generate_create_statement_interception():
+    return "" # TODO
+
+def generate_create_statement_bad_behaviour():
+    return "" # TODO
+
+
+def generate_create_statement_player_off():
+    return ""  # TODO
+
+def generate_create_statement_half_end():
+    return ""  # TODO
+
+def generate_create_statement_carry():
+    return ""  # TODO
+
+def generate_create_statement_foul_won():
+    return ""  # TODO
+
+
 def convert_json_to_sql_events(file_path):
     with open(f"../statsbomb_data/events/{file_path}", 'r', encoding='utf-8') as file:
         json_data = json.load(file)
