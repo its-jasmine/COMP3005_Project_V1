@@ -104,7 +104,7 @@ def generate_create_statement_tactical_shift():
            "lineup_id    INTEGER);"
 
 def generate_create_statement_50_50():
-    return "CREATE TABLE IF NOT EXISTS fiftyfifty \n" \
+    return "CREATE TABLE IF NOT EXISTS fifty_fifty \n" \
            "(event_id          VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
            "outcome            VARCHAR(255),  \n" \
            "counterpress       BOOLEAN);"
@@ -118,16 +118,33 @@ def generate_create_statement_block():
            "counterpress    BOOLEAN);"
 
 def generate_create_statement_interception():
-    return "CREATE TABLE IF NOT EXISTS block \n" \
+    return "CREATE TABLE IF NOT EXISTS interception \n" \
            "(event_id          VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
            "outcome            VARCHAR(255) NOT NULL);"
 
 def generate_create_statement_bad_behaviour():
-    return "CREATE TABLE IF NOT EXISTS block \n" \
+    return "CREATE TABLE IF NOT EXISTS bad_behaviour \n" \
            "(event_id        VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
            "card             VARCHAR(255) NOT NULL);"
+
 def generate_create_statement_player_off(): # TODO confirm whether including?
     return ""
+
+def generate_create_statement_half_end(): # TODO confirm whether including?
+    return ""
+
+def generate_create_statement_carry():
+    return "CREATE TABLE IF NOT EXISTS carry \n" \
+           "(event_id        VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+           "end_location_x             INTEGER NOT NULL, \n" \
+           "end_location_y             INTEGER NOT NULL);"
+
+def generate_create_statement_foul_won():
+    return "CREATE TABLE IF NOT EXISTS foul_won \n" \
+           "(event_id       VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+           "defensive      BOOLEAN,  \n" \
+           "advantage       BOOLEAN,  \n" \
+           "penalty      BOOLEAN);"
 
 # match_id = name of file
 # I'm confused
@@ -206,8 +223,16 @@ def generate_insert_statement_events(table_name, data, match_id):
     #     generate_insert_statement_interception(data["interception"], data["id"])
     # if "bad_behaviour" in data_keys:
     #     generate_insert_statement_bad_behaviour(data["bad_behaviour"], data["id"])
-    if data["type"]["name"] == "Player Off":
-        generate_insert_statement_player_off(data, data["id"])
+    # if data["type"]["name"] == "Player Off": # TODO may remove
+    #     generate_insert_statement_player_off(data, data["id"])
+    # if data["type"]["name"] == "Half End": # TODO may remove
+    #     generate_insert_statement_half_end(data, data["id"])
+    # if "carry" in data_keys:
+    #     generate_insert_statement_carry(data["carry"], data["id"])
+    if data["type"]["name"] == "Foul Won":
+        generate_insert_statement_foul_won(data, data["id"])
+
+
 
 
     # if data["type"]["name"] == "Substitution":
@@ -369,9 +394,9 @@ def generate_insert_statement_50_50(data, event_id):
 
     columns = ', '.join(columns_names)
     values = ', '.join(map(repr, values))
-    statement = f"INSERT INTO fiftyfifty ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;" # table name can't start with numbers, writing as words
+    statement = f"INSERT INTO fifty_fifty ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;" # table name can't start with numbers, writing as words
     print(statement)
-    with open("../insert_statements/5050.txt", "a", encoding='utf-8') as file:
+    with open("../insert_statements/fifty_fifty.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
 def generate_insert_statement_block(data, event_id):
@@ -423,7 +448,7 @@ def generate_insert_statement_bad_behaviour(data, event_id):
     with open("../insert_statements/bad_behaviour.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
-def generate_insert_statement_player_off(data, event_id): # TODO maybe remove? permanent is not found on event level, and theres never a player_off key with addition attributes
+def generate_insert_statement_player_off(data, event_id): # TODO maybe remove? additional attribute is not found on event level, and theres never a key with additional attributes
     columns_names = ["event_id", "permanent"]
     values = []
     values.append(event_id)
@@ -440,15 +465,61 @@ def generate_insert_statement_player_off(data, event_id): # TODO maybe remove? p
     with open("../insert_statements/player_off.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
-def generate_create_statement_half_end():
-    return ""  # TODO
+def generate_insert_statement_half_end(data, event_id): # TODO maybe remove? additional attribute is not found on event level, and theres never a key with additional attributes
+    columns_names = ["event_id", "early_video_end", "match_suspended"]
+    values = []
+    values.append(event_id)
 
-def generate_create_statement_carry():
-    return ""  # TODO
+    for name in columns_names[1:]:
+        try:
+            values.append(data["half_end"][name])
+        except KeyError:
+            values.append("NULL")
 
-def generate_create_statement_foul_won():
-    return ""  # TODO
+    columns = ', '.join(columns_names)
+    values = ', '.join(map(repr, values))
+    statement = f"INSERT INTO half_end ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    print(statement)
+    with open("../insert_statements/half_end.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
+def generate_insert_statement_carry(data, event_id):
+    columns_names = ["event_id", "end_location_x", "end_location_y"]
+    values = []
+    values.append(event_id)
+
+    values.append(data["end_location"][0])
+    values.append(data["end_location"][1])
+    columns = ', '.join(columns_names)
+    values = ', '.join(map(repr, values))
+    statement = f"INSERT INTO carry ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    print(statement)
+    with open("../insert_statements/carry.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
+
+
+def generate_insert_statement_foul_won(data, event_id):
+    columns_names = ["event_id", "defensive", "advantage", "penalty"]
+    values = []
+    values.append(event_id)
+    try:
+        data = data["foul_won"]
+        for name in columns_names[1:]:
+            try:
+                values.append(data[name])
+            except KeyError:
+                values.append("NULL")
+    except KeyError: # TODO maybe make booleans FALSE instead of NULL when they are not there, consider for other boools too
+        values.append("NULL") # defensive
+        values.append("NULL") # advantage
+        values.append("NULL") # penalty
+
+    columns = ', '.join(columns_names)
+    values = ', '.join(map(repr, values))
+    statement = f"INSERT INTO foul_won ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    print(statement)
+    with open("../insert_statements/foul_won.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 def convert_json_to_sql_events(file_path):
     with open(f"../statsbomb_data/events/{file_path}", 'r', encoding='utf-8') as file:
