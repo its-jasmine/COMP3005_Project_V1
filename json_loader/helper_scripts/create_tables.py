@@ -147,20 +147,24 @@ def generate_create_statement_starting_xi():
             "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
             "formation    INTEGER,  \n" \
             "lineup_id    INTEGER,  \n" \
-            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
+            "FOREIGN KEY (event_id) REFERENCES events(event_id),  \n" \
+            "FOREIGN KEY (lineup_id) REFERENCES lineups(lineup_id));"
 
 def generate_create_statement_tactical_shift():
     return "CREATE TABLE IF NOT EXISTS tactical_shift \n" \
             "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
             "formation    INTEGER,  \n" \
             "lineup_id    INTEGER,  \n" \
-            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
+            "FOREIGN KEY (event_id) REFERENCES events(event_id),  \n" \
+            "FOREIGN KEY (lineup_id) REFERENCES lineups(lineup_id));"
 
 def generate_create_statement_50_50():
     return "CREATE TABLE IF NOT EXISTS fifty_fifty \n" \
-           "(event_id          VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "outcome            VARCHAR(255),  \n" \
-           "counterpress       BOOLEAN);"
+            "(event_id          VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "outcome            VARCHAR(255),  \n" \
+            "counterpress       BOOLEAN,  \n" \
+            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
+
 
 def generate_create_statement_block():
     return "CREATE TABLE IF NOT EXISTS block \n" \
@@ -191,16 +195,19 @@ def generate_create_statement_half_end(): # TODO confirm whether including?
 
 def generate_create_statement_carry():
     return "CREATE TABLE IF NOT EXISTS carry \n" \
-           "(event_id        VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "end_location_x             INTEGER NOT NULL, \n" \
-           "end_location_y             INTEGER NOT NULL);"
+            "(event_id        VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "end_location_x             INTEGER NOT NULL, \n" \
+            "end_location_y             INTEGER NOT NULL,  \n" \
+            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
 
 def generate_create_statement_foul_won():
     return "CREATE TABLE IF NOT EXISTS foul_won \n" \
-           "(event_id       VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "defensive      BOOLEAN,  \n" \
-           "advantage       BOOLEAN,  \n" \
-           "penalty      BOOLEAN);"
+            "(event_id       VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "defensive      BOOLEAN,  \n" \
+            "advantage       BOOLEAN,  \n" \
+            "penalty      BOOLEAN,  \n" \
+            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
+
 
 def generate_create_statement_clearance():
     return "CREATE TABLE IF NOT EXISTS clearance \n" \
