@@ -22,86 +22,89 @@ columns_names = keys = [
     "out",
     "related_events"
 ]
+columns_names_lineup = ['lineup_id', 'goalkeeper', 'right_back', 'right_center_back', 'left_center_back', 'left_back', 'right_defensive_midfield', 'left_defensive_midfield', 'right_midfield', 'left_midfield', 'right_center_forward', 'left_center_forward']
 
+lineup_id = 0
 
 def generate_create_statement():
-    return "CREATE TABLE IF NOT EXISTS matches \n" \
-           "(event_id            VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "match_id             INTEGER NOT NULL,  \n" \
-           "index                INTEGER NOT NULL, \n" \
-           "period               INTEGER NOT NULL, \n" \
-           "timestamp            TIME NOT NULL, \n" \
-           "minute               INTEGER NOT NULL, \n" \
-           "second               INTEGER NOT NULL, \n" \
-           "type                 VARCHAR(255) NOT NULL, \n" \
-           "possession            INTEGER NOT NULL, \n" \
-           "possession_team_id    INTEGER NOT NULL, \n" \
-           "play_pattern         VARCHAR(255) NOT NULL, \n" \
-           "team_id              INTEGER, \n" \
-           "duration             FLOAT, \n" \
-           "location             INTEGER, \n" \
-           "under_pressure       INTEGER, \n" \
-           "off_camera           INTEGER, \n" \
-           "out                  INTEGER, \n" \
-           "related_events       INTEGER);"
+    return "CREATE TABLE IF NOT EXISTS events \n" \
+            "(event_id            VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "match_id             INTEGER NOT NULL,  \n" \
+            "index                INTEGER NOT NULL, \n" \
+            "period               INTEGER NOT NULL, \n" \
+            "timestamp            TIME NOT NULL, \n" \
+            "minute               INTEGER NOT NULL, \n" \
+            "second               INTEGER NOT NULL, \n" \
+            "type                 VARCHAR(255) NOT NULL, \n" \
+            "possession            INTEGER NOT NULL, \n" \
+            "possession_team_id    INTEGER NOT NULL, \n" \
+            "play_pattern         VARCHAR(255) NOT NULL, \n" \
+            "team_id              INTEGER, \n" \
+            "duration             FLOAT, \n" \
+            "location             INTEGER, \n" \
+            "under_pressure       INTEGER, \n" \
+            "off_camera           INTEGER, \n" \
+            "out                  INTEGER, \n" \
+            "related_events       INTEGER);"
 
 def generate_create_statement_ball_recovery():
     return "CREATE TABLE IF NOT EXISTS ball_recovery \n" \
-           "(event_id            VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "offensive            VARCHAR(255),  \n" \
-           "recovery_failure     VARCHAR(255) );"
+            "(event_id            VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "offensive            VARCHAR(255),  \n" \
+            "recovery_failure     VARCHAR(255) );"
 
 def generate_create_statement_dribble():
     return "CREATE TABLE IF NOT EXISTS dribble \n" \
-           "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "overrun      VARCHAR(255),  \n" \
-           "nutmeg       VARCHAR(255),  \n" \
-           "outcome      VARCHAR(255),  \n" \
-           "no_touch     VARCHAR(255));"
+            "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "overrun      VARCHAR(255),  \n" \
+            "nutmeg       VARCHAR(255),  \n" \
+            "outcome      VARCHAR(255),  \n" \
+            "no_touch     VARCHAR(255));"
 
 def generate_create_statement_shot():
     return "CREATE TABLE IF NOT EXISTS shot \n" \
-           "(event_id         VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "key_pass_id       VARCHAR(255),  \n" \
-           "end_location      VARCHAR(255),  \n" \
-           "aerial_won        VARCHAR(255),  \n" \
-           "follows_dribble   VARCHAR(255),  \n" \
-           "first_time        VARCHAR(255),  \n" \
-           "open_goal         VARCHAR(255),  \n" \
-           "statsbomb_xg      INTEGER,  \n" \
-           "deflected         VARCHAR(255),  \n" \
-           "technique         VARCHAR(255),  \n" \
-           "body_part         VARCHAR(255),  \n" \
-           "type              VARCHAR(255),  \n" \
-           "outcome           VARCHAR(255));"
+            "(event_id         VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "key_pass_id       VARCHAR(255),  \n" \
+            "end_location      VARCHAR(255),  \n" \
+            "aerial_won        VARCHAR(255),  \n" \
+            "follows_dribble   VARCHAR(255),  \n" \
+            "first_time        VARCHAR(255),  \n" \
+            "open_goal         VARCHAR(255),  \n" \
+            "statsbomb_xg      INTEGER,  \n" \
+            "deflected         VARCHAR(255),  \n" \
+            "technique         VARCHAR(255),  \n" \
+            "body_part         VARCHAR(255),  \n" \
+            "type              VARCHAR(255),  \n" \
+            "outcome           VARCHAR(255));"
 
 def generate_create_statement_injury_stoppage():
     return "CREATE TABLE IF NOT EXISTS injury_stoppage \n" \
-           "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "in_chain      VARCHAR(255));"
+            "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "in_chain      VARCHAR(255));"
 
 def generate_create_statement_ball_receipt():
     return "CREATE TABLE IF NOT EXISTS ball_receipt \n" \
-           "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "outcome      VARCHAR(255));"
+            "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "outcome      VARCHAR(255));"
 
 def generate_create_statement_substitution():
     return "CREATE TABLE IF NOT EXISTS substitution \n" \
-           "(event_id      VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "replacement    VARCHAR(255),  \n" \
-           "outcome        VARCHAR(255));"
+            "(event_id      VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "replacement    VARCHAR(255),  \n" \
+            "outcome        VARCHAR(255));"
 
 def generate_create_statement_starting_xi():
     return "CREATE TABLE IF NOT EXISTS starting_xi \n" \
-           "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "formation    INTEGER,  \n" \
-           "lineup_id    INTEGER);"
+            "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "formation    INTEGER,  \n" \
+            "lineup_id    INTEGER,  \n" \
+            "FOREIGN KEY event_id REFERENCES events (event_id));"
 
 def generate_create_statement_tactical_shift():
     return "CREATE TABLE IF NOT EXISTS tactical_shift \n" \
-           "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "formation    INTEGER,  \n" \
-           "lineup_id    INTEGER);"
+            "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "formation    INTEGER,  \n" \
+            "lineup_id    INTEGER);"
 
 # match_id = name of file
 # I'm confused
@@ -154,26 +157,26 @@ def generate_insert_statement_events(table_name, data, match_id):
     values = ', '.join(map(repr, values))
     statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;") # TODO add IF NOT EXISTS
     
-    if "ball_recovery" in data.keys():
-        generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
+    # if "ball_recovery" in data.keys():
+    #     generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
 
-    if "dribble" in data.keys():
-        generate_insert_statement_dribble(data["dribble"], data["id"])
+    # if "dribble" in data.keys():
+    #     generate_insert_statement_dribble(data["dribble"], data["id"])
 
-    if "shot" in data.keys():
-        generate_insert_statement_shot(data["shot"], data["id"])
+    # if "shot" in data.keys():
+    #     generate_insert_statement_shot(data["shot"], data["id"])
 
-    if "injury_stoppage" in data.keys():
-        generate_insert_statement_injury_stoppage(data["injury_stoppage"], data["id"])
+    # if "injury_stoppage" in data.keys():
+    #     generate_insert_statement_injury_stoppage(data["injury_stoppage"], data["id"])
 
-    if "ball_receipt" in data.keys():
-        generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
+    # if "ball_receipt" in data.keys():
+    #     generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
 
-    if data["type"]["name"] == "Substitution":
-        try:
-            generate_insert_statement_substitution(data["substitution"], data["id"])
-        except KeyError:
-            generate_insert_statement_substitution(data["stta"], data["id"])
+    # if data["type"]["name"] == "Substitution":
+    #     try:
+    #         generate_insert_statement_substitution(data["substitution"], data["id"])
+    #     except KeyError:
+    #         generate_insert_statement_substitution(data["stta"], data["id"])
 
     if data["type"]["name"] == "Starting XI":
         generate_insert_statement_starting_xi(data["tactics"], data["id"])
@@ -292,28 +295,62 @@ def generate_insert_statement_substitution(data, event_id):
         file.write(statement + "\n")
 
 def generate_insert_statement_starting_xi(data, event_id):
+    #statement for lineup
+    global lineup_id
+    lineup_values = []
+    lineup_values.append(lineup_id)
+    for player in data["lineup"]:
+        lineup_values.append(player["player"]["id"])
+
+    columns = ', '.join(columns_names_lineup) 
+    values = ', '.join(map(repr, lineup_values))
+    statement = f"INSERT INTO lineups ({columns}) VALUES ({values})"  + " ON CONFLICT (lineup_id) DO NOTHING;"
+    with open("../insert_statements/lineup.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
+
+
+    #statement for starting xi
     columns_names = ["event_id", "formation", "lineup_id"]
     values = []
     values.append(event_id)
     values.append(data["formation"])
-    values.append("lineup id???")
+    values.append(lineup_id)
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO starting_xi ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
     with open("../insert_statements/starting_xi.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
+    lineup_id += 1
+    
+    
 
 def generate_insert_statement_tactical_shift(data, event_id):
+    #statement for lineup
+    global lineup_id
+    lineup_values = []
+    lineup_values.append(lineup_id)
+    for player in data["lineup"]:
+        lineup_values.append(player["player"]["id"])
+
+    columns = ', '.join(columns_names_lineup) 
+    values = ', '.join(map(repr, lineup_values))
+    statement = f"INSERT INTO lineups ({columns}) VALUES ({values})"  + " ON CONFLICT (lineup_id) DO NOTHING;"
+    with open("../insert_statements/lineup.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
+
+
     columns_names = ["event_id", "formation", "lineup_id"]
     values = []
     values.append(event_id)
     values.append(data["formation"])
-    values.append("lineup id???")
+    values.append(lineup_id)
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO tactical_shift ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
     with open("../insert_statements/tactical_shift.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
+
+    lineup_id += 1
 
 
 def convert_json_to_sql_events(file_path):
