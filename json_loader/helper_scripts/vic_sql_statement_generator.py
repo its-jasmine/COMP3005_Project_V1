@@ -85,7 +85,10 @@ def generate_insert_statement_clearance(data, id):
 
     columns = ', '.join(new_values.keys()) 
     values = ', '.join(map(repr, new_values.values()))
-    return [f"INSERT INTO clearance ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"]
+    statement = f"INSERT INTO clearance ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace('None', 'NULL')
+    with open("../insert_statements/clearance.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 def generate_insert_statement_goal_keeper(data, id):
     column_names = ["position", "end_location_x", "end_location_y", "technique", "body_part", "type", "outcome"]
@@ -105,7 +108,10 @@ def generate_insert_statement_goal_keeper(data, id):
 
     columns = ', '.join(new_values.keys()) 
     values = ', '.join(map(repr, new_values.values()))
-    return [f"INSERT INTO goal_keeper ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"]
+    statement = f"INSERT INTO goal_keeper ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace('None', 'NULL')
+    with open("../insert_statements/goal_keeper.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 def generate_insert_statement_foul_committed(data, id):
     column_names = ["counterpress","offensive", "type", "advantage", "penalty", "card"]
@@ -123,7 +129,10 @@ def generate_insert_statement_foul_committed(data, id):
 
     columns = ', '.join(new_values.keys()) 
     values = ', '.join(map(repr, new_values.values()))
-    return [f"INSERT INTO comitted ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"]
+    statement = f"INSERT INTO comitted ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace('None', 'NULL')
+    with open("../insert_statements/foul_comimitted.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 def generate_insert_statement_miscontrol(data, id):
     new_values = {}
@@ -134,7 +143,10 @@ def generate_insert_statement_miscontrol(data, id):
         new_values["counterpress"] = None
     columns = ', '.join(new_values.keys()) 
     values = ', '.join(map(repr, new_values.values()))
-    return [f"INSERT INTO miscontrol ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"]
+    statement = f"INSERT INTO miscontrol ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace('None', 'NULL')
+    with open("../insert_statements/miscontrol.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 def generate_insert_statement_dribble_past(data, id):
     new_values = {}
@@ -145,7 +157,10 @@ def generate_insert_statement_dribble_past(data, id):
         new_values["counterpress"] = None
     columns = ', '.join(new_values.keys()) 
     values = ', '.join(map(repr, new_values.values()))
-    return [f"INSERT INTO dribble_past ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"]
+    statement = f"INSERT INTO dribble_past ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace('None', 'NULL')
+    with open("../insert_statements/dribble_past.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 def generate_insert_statement_pressure(data, id):
     new_values = {}
@@ -156,7 +171,10 @@ def generate_insert_statement_pressure(data, id):
         new_values["counterpress"] = None
     columns = ', '.join(new_values.keys()) 
     values = ', '.join(map(repr, new_values.values()))
-    return [f"INSERT INTO pressure ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"]
+    statement = f"INSERT INTO pressure ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace('None', 'NULL')
+    with open("../insert_statements/statement_pressure.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 def generate_insert_statement_half_start(data, id):
     new_values = {}
@@ -167,7 +185,10 @@ def generate_insert_statement_half_start(data, id):
         new_values["late_video_start"] = None
     columns = ', '.join(new_values.keys()) 
     values = ', '.join(map(repr, new_values.values()))
-    return [f"INSERT INTO half_start ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"]
+    statement = f"INSERT INTO half_start ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace('None', 'NULL')
+    with open("../insert_statements/half_start.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 def generate_insert_statement_duel(data, id):
     column_names = ["type", "outcome"]
@@ -182,7 +203,10 @@ def generate_insert_statement_duel(data, id):
 
     columns = ', '.join(new_values.keys()) 
     values = ', '.join(map(repr, new_values.values()))
-    return [f"INSERT INTO duel ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"]
+    statement = f"INSERT INTO duel ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace('None', 'NULL')
+    with open("../insert_statements/duel.txt", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
 
 """ Grabbing Data From JSON """
 
@@ -227,6 +251,6 @@ for match_id in match_id_list:
     
 sql_statements = set(sql_statements) # deduplicate
 
-for statement in sql_statements:
-    statement = statement.replace('None', 'NULL')
-    print(statement)
+#for statement in sql_statements:
+    # statement = statement.replace('None', 'NULL')
+    # print(statement)
