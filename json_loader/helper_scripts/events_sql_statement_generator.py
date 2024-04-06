@@ -198,20 +198,20 @@ def generate_insert_statement_events(table_name, data, match_id):
     statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;") # TODO add IF NOT EXISTS
 
     data_keys = data.keys()
-    # if "ball_recovery" in data_keys:
-    #     generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
-    #
-    # if "dribble" in data_keys:
-    #     generate_insert_statement_dribble(data["dribble"], data["id"])
-    #
-    # if "shot" in data_keys:
-    #     generate_insert_statement_shot(data["shot"], data["id"])
-    #
-    # if "injury_stoppage" in data_keys:
-    #     generate_insert_statement_injury_stoppage(data["injury_stoppage"], data["id"])
-    #
-    # if "ball_receipt" in data_keys:
-    #     generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
+    if "ball_recovery" in data_keys:
+        generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
+
+    if "dribble" in data_keys:
+        generate_insert_statement_dribble(data["dribble"], data["id"])
+
+    if "shot" in data_keys:
+        generate_insert_statement_shot(data["shot"], data["id"])
+
+    if "injury_stoppage" in data_keys:
+        generate_insert_statement_injury_stoppage(data["injury_stoppage"], data["id"])
+
+    if "ball_receipt" in data_keys:
+        generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
 
     if "50_50" in data_keys:
         generate_insert_statement_50_50(data, data["id"])
@@ -229,18 +229,17 @@ def generate_insert_statement_events(table_name, data, match_id):
         generate_insert_statement_carry(data["carry"], data["id"])
     if data["type"]["name"] == "Foul Won":
         generate_insert_statement_foul_won(data, data["id"])
+    if data["type"]["name"] == "Substitution":
+        try:
+            generate_insert_statement_substitution(data["substitution"], data["id"])
+        except KeyError:
+            generate_insert_statement_substitution(data["stta"], data["id"])
 
-    # if data["type"]["name"] == "Substitution":
-    #     try:
-    #         generate_insert_statement_substitution(data["substitution"], data["id"])
-    #     except KeyError:
-    #         generate_insert_statement_substitution(data["stta"], data["id"])
-    #
-    # if data["type"]["name"] == "Starting XI":
-    #     generate_insert_statement_starting_xi(data["tactics"], data["id"])
-    #
-    # if data["type"]["name"] == "Tactical Shift":
-    #     generate_insert_statement_tactical_shift(data["tactics"], data["id"])
+    if data["type"]["name"] == "Starting XI":
+        generate_insert_statement_starting_xi(data["tactics"], data["id"])
+
+    if data["type"]["name"] == "Tactical Shift":
+        generate_insert_statement_tactical_shift(data["tactics"], data["id"])
     
     return statements
 
