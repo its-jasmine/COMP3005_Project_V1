@@ -16,7 +16,8 @@ columns_names = keys = [
     "play_pattern",
     "team_id",
     "duration",
-    "location",
+    "location_x",
+    "location_y",
     "under_pressure",
     "off_camera",
     "out"
@@ -25,8 +26,6 @@ columns_names_lineup = ['lineup_id', 'goalkeeper', 'right_back', 'right_center_b
 
 lineup_id = 0
 
-# match_id = name of file
-# I'm confused
 def generate_insert_statement_events(table_name, data, match_id):
     statements = []
     values = []
@@ -45,109 +44,105 @@ def generate_insert_statement_events(table_name, data, match_id):
     try:
         values.append(data["duration"])
     except KeyError:
-        values.append("NULL")
+        values.append(None)
 
     try:
-        values.append(data["location"])
+        values.append(data["location"][0])
     except KeyError:
-        values.append("NULL")
+        values.append(None)
+    
+    try:
+        values.append(data["location"][1])
+    except KeyError:
+        values.append(None)
 
     try:
         values.append(data["under_pressure"])
     except KeyError:
-        values.append("NULL")
+        values.append(None)
 
     try:
         values.append(data["off_camera"])
     except KeyError:
-        values.append("NULL")
+        values.append(None)
 
     try:
         values.append(data["out"])
     except KeyError:
-        values.append("NULL")
-
-    try:
-        values.append(data["related_events"])
-    except KeyError:
-        values.append("NULL")
+        values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
-    statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;") # TODO add IF NOT EXISTS
-    
-    if "ball_recovery" in data.keys():
-        generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
+    statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;")
 
     data_keys = data.keys()
-    if "ball_recovery" in data_keys:
-        generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
+    # if "ball_recovery" in data_keys:
+    #     generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
 
-    if "dribble" in data_keys:
-        generate_insert_statement_dribble(data["dribble"], data["id"])
+    # if "dribble" in data_keys:
+    #     generate_insert_statement_dribble(data["dribble"], data["id"])
 
-    if "shot" in data_keys:
-        generate_insert_statement_shot(data["shot"], data["id"])
+    # if "shot" in data_keys:
+    #     generate_insert_statement_shot(data["shot"], data["id"])
 
-    if "injury_stoppage" in data_keys:
-        generate_insert_statement_injury_stoppage(data["injury_stoppage"], data["id"])
+    # if "injury_stoppage" in data_keys:
+    #     generate_insert_statement_injury_stoppage(data["injury_stoppage"], data["id"])
 
-    if "ball_receipt" in data_keys:
-        generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
+    # if "ball_receipt" in data_keys:
+    #     generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
 
-    if "50_50" in data_keys:
-        generate_insert_statement_50_50(data, data["id"])
+    # if "50_50" in data_keys:
+    #     generate_insert_statement_50_50(data, data["id"])
         
-    if "block" in data_keys:
-        generate_insert_statement_block(data, data["id"])
+    # if "block" in data_keys:
+    #     generate_insert_statement_block(data, data["id"])
         
-    if "interception" in data_keys:
-        generate_insert_statement_interception(data["interception"], data["id"])
+    # if "interception" in data_keys:
+    #     generate_insert_statement_interception(data["interception"], data["id"])
         
-    if "bad_behaviour" in data_keys:
-        generate_insert_statement_bad_behaviour(data["bad_behaviour"], data["id"])
-        
-    if data["type"]["name"] == "Player Off": # TODO may remove
-        generate_insert_statement_player_off(data, data["id"])
-        
-    if data["type"]["name"] == "Half End": # TODO may remove
-        generate_insert_statement_half_end(data, data["id"])
-        
-    if "carry" in data_keys:
-        generate_insert_statement_carry(data["carry"], data["id"])
-        
-    if data["type"]["name"] == "Foul Won":
-        generate_insert_statement_foul_won(data, data["id"])
-        
-    if data["type"]["name"] == "Substitution":
-        try:
-            generate_insert_statement_substitution(data["substitution"], data["id"])
-        except KeyError:
-            generate_insert_statement_substitution(data["stta"], data["id"])
+    # if "bad_behaviour" in data_keys:
+    #     generate_insert_statement_bad_behaviour(data["bad_behaviour"], data["id"])
 
-    if data["type"]["name"] == "Starting XI":
-        generate_insert_statement_starting_xi(data["tactics"], data["id"])
+    # if "pass" in data_keys:
+    #     generate_insert_statement_pass(data["pass"], data["id"])
+    
+    # Not including Player Off and Half End tables as none of their attributes have values
+        
+    # if "carry" in data_keys:
+    #     generate_insert_statement_carry(data["carry"], data["id"])
+        
+    # if data["type"]["name"] == "Foul Won":
+    #     generate_insert_statement_foul_won(data, data["id"])
+        
+    # if data["type"]["name"] == "Substitution":
+    #     try:
+    #         generate_insert_statement_substitution(data["substitution"], data["id"])
+    #     except KeyError:
+    #         generate_insert_statement_substitution(data["stta"], data["id"])
 
-    if data["type"]["name"] == "Tactical Shift":
-        generate_insert_statement_tactical_shift(data["tactics"], data["id"])
+    # if data["type"]["name"] == "Starting XI":
+    #     generate_insert_statement_starting_xi(data["tactics"], data["id"])
 
-    id = data["id"]
-    if data.get('type')['name'] == "Clearance":
-        generate_insert_statement_clearance(data.get("clearance"), id)
-    elif data.get('type')['name'] == "Goal Keeper":
-        generate_insert_statement_goal_keeper(data.get("goalkeeper"), id)
-    elif data.get('type')['name'] == "Foul Committed":
-        generate_insert_statement_foul_committed(data.get("foul_committed"), id)
-    elif data.get('type')['name'] == "Miscontrol":
-        generate_insert_statement_miscontrol(data.get("miscontrol"), id)
-    elif data.get('type')['name'] == "Dribbled Past":
-        generate_insert_statement_dribble_past(data.get("counterpress"), id)
-    elif data.get('type')['name'] == "Pressure":
-        generate_insert_statement_pressure(data.get("counterpress"), id)
-    elif data.get('type')['name'] == "Half Start":
-        generate_insert_statement_half_start(data.get("half_start"), id)
-    elif data.get('type')['name'] == "Duel":
-        generate_insert_statement_duel(data.get("duel"), id)
+    # if data["type"]["name"] == "Tactical Shift":
+    #     generate_insert_statement_tactical_shift(data["tactics"], data["id"])
+
+    # id = data["id"]
+    # if data.get('type')['name'] == "Clearance":
+    #     generate_insert_statement_clearance(data.get("clearance"), id)
+    # elif data.get('type')['name'] == "Goal Keeper":
+    #     generate_insert_statement_goal_keeper(data.get("goalkeeper"), id)
+    # elif data.get('type')['name'] == "Foul Committed":
+    #     generate_insert_statement_foul_committed(data.get("foul_committed"), id)
+    # elif data.get('type')['name'] == "Miscontrol":
+    #     generate_insert_statement_miscontrol(data.get("miscontrol"), id)
+    # elif data.get('type')['name'] == "Dribbled Past":
+    #     generate_insert_statement_dribble_past(data.get("counterpress"), id)
+    # elif data.get('type')['name'] == "Pressure":
+    #     generate_insert_statement_pressure(data.get("counterpress"), id)
+    # elif data.get('type')['name'] == "Half Start":
+    #     generate_insert_statement_half_start(data.get("half_start"), id)
+    # elif data.get('type')['name'] == "Duel":
+    #     generate_insert_statement_duel(data.get("duel"), id)
     
     return statements
 
@@ -160,6 +155,7 @@ def generate_insert_statement_ball_recovery(data, event_id):
         try:
             values.append(data[name])
         except KeyError:
+            values.append(None)
             values.append(None)
 
     columns = ', '.join(columns_names) 
@@ -181,6 +177,7 @@ def generate_insert_statement_dribble(data, event_id):
             else:
                 values.append(data[name])
         except KeyError:
+            values.append(None)
             values.append(None)
 
     columns = ', '.join(columns_names) 
@@ -209,6 +206,7 @@ def generate_insert_statement_shot(data, event_id):
                 values.append(data[name])
         except KeyError:
             values.append(None)
+            values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
@@ -226,6 +224,7 @@ def generate_insert_statement_injury_stoppage(data, event_id):
         try:
             values.append(data[name])
         except KeyError:
+            values.append(None)
             values.append(None)
 
     columns = ', '.join(columns_names) 
@@ -245,6 +244,7 @@ def generate_insert_statement_ball_receipt(data, event_id):
             values.append(data[name]["name"])
         except KeyError:
             values.append(None)
+            values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
@@ -262,6 +262,7 @@ def generate_insert_statement_substitution(data, event_id):
         try:
             values.append(data[name]["name"])
         except KeyError:
+            values.append(None)
             values.append(None)
 
     columns = ', '.join(columns_names) 
@@ -617,6 +618,55 @@ def generate_insert_statement_duel(data, id):
     with open("../insert_statements/duel.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
+def generate_insert_statement_pass(data, event_id):
+    # removed attributes: "backheel", "cutback",
+    columns_names = ["event_id",
+                     "recepient_id",
+                     "length",
+                     "angle",
+                     "height",
+                     "end_location_x",
+                     "end_location_y",
+                     "assisted_shot_id", # only a few have a value for this
+                     "deflected", # only a few have a value for this
+                     "miscommunication", # only a few have a value for this
+                     "cross_", # only a few have a value for this
+                     "switch", # only a few have a value for this
+                     "shot_assist", # only a few have a value for this
+                     "goal_assist", # only a few have a value for this
+                     "body_part",
+                     "type", # only a few have a value for this
+                     "outcome", # only a few have a value for this
+                     "technique" # only a few have a value for this
+                     ]
+    values = []
+    values.append(event_id)
+    for name in columns_names[1:]:
+        try:
+            if name == "recipient_id":
+                values.append(data["recipient"]["id"])
+            elif name == "end_location_x":
+                values.append(data["end_location"][0])
+            elif name == "end_location_y":
+                values.append(data["end_location"][1])
+            elif name == "cross_":
+                values.append(data["cross"])
+            elif name in ["body_part", "outcome", "height", "type", "technique"]:
+                values.append(data[name]["name"])
+            else:
+                values.append(data[name])
+        except KeyError:
+            values.append(None)
+
+
+    columns = ', '.join(columns_names)
+    values = ', '.join(map(repr, values))
+    statement = f"INSERT INTO pass ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace('None', 'NULL')
+    print(statement)
+    with open("../insert_statements/pass.sql", "a", encoding='utf-8') as file:
+        file.write(statement + "\n")
+
 def convert_json_to_sql_events(file_path):
     with open(f"../statsbomb_data/events/{file_path}", 'r', encoding='utf-8') as file:
         json_data = json.load(file)
@@ -639,17 +689,31 @@ sql_statements = []
 directory = "../statsbomb_data/events/"
 files = os.listdir(directory)
 
-# for file in files:
-#    sql_statements += convert_json_to_sql_events(file)
+for file in files:
+    sql_statements += convert_json_to_sql_events(file)
 
-sql_statements += convert_json_to_sql_events("303473.json") #just to test
+#sql_statements += convert_json_to_sql_events("303473.json") #just to test
+print(len(sql_statements))
+sql_statements = list(set(sql_statements)) # deduplicate
+print(len(sql_statements))
 
-sql_statements = set(sql_statements) # deduplicate
+# fourth = round(len(sql_statements) / 4)
+# for statement in sql_statements[:fourth]:
+#     with open("../insert_statements/events1.sql", "a", encoding='utf-8') as file:
+#         statement = statement.replace("None", "NULL")
+#         file.write(statement + "\n")
+# for statement in sql_statements[fourth:fourth*2]:
+#     with open("../insert_statements/events2.sql", "a", encoding='utf-8') as file:
+#         statement = statement.replace("None", "NULL")
+#         file.write(statement + "\n")
+# for statement in sql_statements[fourth*2:fourth*3]:
+#     with open("../insert_statements/events3.sql", "a", encoding='utf-8') as file:
+#         statement = statement.replace("None", "NULL")
+#         file.write(statement + "\n")
+# for statement in sql_statements[fourth*3:]:
+#     with open("../insert_statements/events4.sql", "a", encoding='utf-8') as file:
+#         statement = statement.replace("None", "NULL")
+#         file.write(statement + "\n")
+    
 
-"""
-with open("../insert_statements/events.sql", "a", encoding='utf-8') as file:
-    for statement in sql_statements:
-        statement = statement.replace("None", "NULL")
-        file.write(statement + "\n")
-"""
 

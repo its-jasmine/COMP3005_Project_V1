@@ -34,7 +34,7 @@ def convert_json_to_sql(file_path):
 
 
 sql_statements = []
-sql_statements.append(generate_create_statement())
+# sql_statements.append(generate_create_statement())
 sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/2/44.json")
 sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/11/4.json")
 sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/11/42.json")
@@ -47,3 +47,11 @@ for statement in sql_statements:
     statement = statement.replace("''", "")
     statement = statement.replace('"', "'")
     print(statement)
+
+
+with open("../insert_statements/stadiums.sql", "a", encoding='utf-8') as file:
+    for statement in sql_statements:
+        # "St. Mary''s Stadium" and "St. James'' Park" are causing issues w sql... workaround:
+        statement = statement.replace("''", "")
+        statement = statement.replace('"', "'")
+        file.write(statement + "\n")
