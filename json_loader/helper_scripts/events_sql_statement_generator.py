@@ -213,27 +213,22 @@ def generate_insert_statement_events(table_name, data, match_id):
     # if "ball_receipt" in data_keys:
     #     generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
 
-    # if "50_50" in data_keys:
-    #     generate_insert_statement_50_50(data, data["id"])
-
-    # if "block" in data_keys:
-    #     generate_insert_statement_block(data, data["id"])
-
-    # if "interception" in data_keys:
-    #     generate_insert_statement_interception(data["interception"], data["id"])
-    # if "bad_behaviour" in data_keys:
-    #     generate_insert_statement_bad_behaviour(data["bad_behaviour"], data["id"])
-    # if data["type"]["name"] == "Player Off": # TODO may remove
-    #     generate_insert_statement_player_off(data, data["id"])
-    # if data["type"]["name"] == "Half End": # TODO may remove
-    #     generate_insert_statement_half_end(data, data["id"])
-    # if "carry" in data_keys:
-    #     generate_insert_statement_carry(data["carry"], data["id"])
+    if "50_50" in data_keys:
+        generate_insert_statement_50_50(data, data["id"])
+    if "block" in data_keys:
+        generate_insert_statement_block(data, data["id"])
+    if "interception" in data_keys:
+        generate_insert_statement_interception(data["interception"], data["id"])
+    if "bad_behaviour" in data_keys:
+        generate_insert_statement_bad_behaviour(data["bad_behaviour"], data["id"])
+    if data["type"]["name"] == "Player Off": # TODO may remove
+        generate_insert_statement_player_off(data, data["id"])
+    if data["type"]["name"] == "Half End": # TODO may remove
+        generate_insert_statement_half_end(data, data["id"])
+    if "carry" in data_keys:
+        generate_insert_statement_carry(data["carry"], data["id"])
     if data["type"]["name"] == "Foul Won":
         generate_insert_statement_foul_won(data, data["id"])
-
-
-
 
     # if data["type"]["name"] == "Substitution":
     #     try:
@@ -390,11 +385,12 @@ def generate_insert_statement_50_50(data, event_id):
     try:
         values.append(data["counterpress"]) #TODO docs mention this, but most objects don't seem to have it? setting as NULL for now
     except KeyError:
-        values.append("NULL")
+        values.append(None)
 
     columns = ', '.join(columns_names)
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO fifty_fifty ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;" # table name can't start with numbers, writing as words
+    statement = statement.replace("None", "NULL")
     print(statement)
     with open("../insert_statements/fifty_fifty.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
@@ -408,15 +404,16 @@ def generate_insert_statement_block(data, event_id):
         try:
             values.append(data["block"][name])
         except KeyError:
-            values.append("NULL")
+            values.append(None)
     try:
         values.append(data["counterpress"])  # TODO docs mention this, but most objects don't seem to have it? setting as NULL for now
     except KeyError:
-        values.append("NULL")
+        values.append(None)
 
     columns = ', '.join(columns_names)
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO block ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     print(statement)
     with open("../insert_statements/block.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
@@ -456,11 +453,12 @@ def generate_insert_statement_player_off(data, event_id): # TODO maybe remove? a
     try:
         values.append(data["permanent"])
     except KeyError:
-        values.append("NULL")
+        values.append(None)
 
     columns = ', '.join(columns_names)
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO player_off ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     print(statement)
     with open("../insert_statements/player_off.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
@@ -474,11 +472,12 @@ def generate_insert_statement_half_end(data, event_id): # TODO maybe remove? add
         try:
             values.append(data["half_end"][name])
         except KeyError:
-            values.append("NULL")
+            values.append(None)
 
     columns = ', '.join(columns_names)
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO half_end ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     print(statement)
     with open("../insert_statements/half_end.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
@@ -508,15 +507,16 @@ def generate_insert_statement_foul_won(data, event_id):
             try:
                 values.append(data[name])
             except KeyError:
-                values.append("NULL")
+                values.append(None)
     except KeyError: # TODO maybe make booleans FALSE instead of NULL when they are not there, consider for other boools too
-        values.append("NULL") # defensive
-        values.append("NULL") # advantage
-        values.append("NULL") # penalty
+        values.append(None) # defensive
+        values.append(None) # advantage
+        values.append(None) # penalty
 
     columns = ', '.join(columns_names)
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO foul_won ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     print(statement)
     with open("../insert_statements/foul_won.txt", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
