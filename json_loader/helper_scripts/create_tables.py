@@ -133,9 +133,9 @@ def generate_create_statement_shot():
     return "CREATE TABLE IF NOT EXISTS shot \n" \
             "(event_id         VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
             "key_pass_id       VARCHAR(255),  \n" \
-            "end_location_x      VARCHAR(255),  \n" \
-            "end_location_y     VARCHAR(255),  \n" \
-            "end_location_z      VARCHAR(255),  \n" \
+            "end_location_x    FLOAT,  \n" \
+            "end_location_y    FLOAT,  \n" \
+            "end_location_z    FLOAT,  \n" \
             "aerial_won        BOOLEAN,  \n" \
             "follows_dribble   BOOLEAN,  \n" \
             "first_time        BOOLEAN,  \n" \
