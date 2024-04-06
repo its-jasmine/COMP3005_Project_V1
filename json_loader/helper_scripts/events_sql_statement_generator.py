@@ -156,10 +156,12 @@ def generate_insert_statement_ball_recovery(data, event_id):
             values.append(data[name])
         except KeyError:
             values.append(None)
+            values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO ball_recovery ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     with open("../insert_statements/ball_recovery.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
@@ -176,30 +178,40 @@ def generate_insert_statement_dribble(data, event_id):
                 values.append(data[name])
         except KeyError:
             values.append(None)
+            values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO dribble ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     with open("../insert_statements/dribble.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
 def generate_insert_statement_shot(data, event_id):
-    columns_names = ["event_id", "key_pass_id", "end_location", "aerial_won", "follows_dribble", "first_time", "open_goal", "statsbomb_xg", "deflected", "technique", "body_part", "type", "outcome"]
+    columns_names = ["event_id", "key_pass_id", "end_location_x", "end_location_y", "end_location_z", "aerial_won", "follows_dribble", "first_time", "open_goal", "statsbomb_xg", "deflected", "technique", "body_part", "type", "outcome"]
     values = []
     values.append(event_id)
 
     for name in columns_names[1:]:
+        end_location = {"end_location_x":0, "end_location_y":1, "end_location_z":2}
         try:
             if name in ["technique", "body_part", "type", "outcome"]:
                 values.append(data[name]["name"])
+            elif name in ["end_location_x", "end_location_y", "end_location_z"]:
+                try:
+                    values.append(data["end_location"][end_location[name]])
+                except:
+                    values.append(None)
             else:
                 values.append(data[name])
         except KeyError:
+            values.append(None)
             values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO shot ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     with open("../insert_statements/shot.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
@@ -213,10 +225,12 @@ def generate_insert_statement_injury_stoppage(data, event_id):
             values.append(data[name])
         except KeyError:
             values.append(None)
+            values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO injury_stoppage ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     with open("../insert_statements/injury_stoppage.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
@@ -230,10 +244,12 @@ def generate_insert_statement_ball_receipt(data, event_id):
             values.append(data[name]["name"])
         except KeyError:
             values.append(None)
+            values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO ball_receipt ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     with open("../insert_statements/ball_receipt.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
@@ -247,10 +263,12 @@ def generate_insert_statement_substitution(data, event_id):
             values.append(data[name]["name"])
         except KeyError:
             values.append(None)
+            values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO substitution ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     with open("../insert_statements/substitution.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
@@ -265,6 +283,7 @@ def generate_insert_statement_starting_xi(data, event_id):
     columns = ', '.join(columns_names_lineup) 
     values = ', '.join(map(repr, lineup_values))
     statement = f"INSERT INTO lineups ({columns}) VALUES ({values})"  + " ON CONFLICT (lineup_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     with open("../insert_statements/lineup.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
@@ -278,6 +297,7 @@ def generate_insert_statement_starting_xi(data, event_id):
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO starting_xi ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     with open("../insert_statements/starting_xi.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
     lineup_id += 1
@@ -295,6 +315,7 @@ def generate_insert_statement_tactical_shift(data, event_id):
     columns = ', '.join(columns_names_lineup) 
     values = ', '.join(map(repr, lineup_values))
     statement = f"INSERT INTO lineups ({columns}) VALUES ({values})"  + " ON CONFLICT (lineup_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     with open("../insert_statements/lineup.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
@@ -307,6 +328,7 @@ def generate_insert_statement_tactical_shift(data, event_id):
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO tactical_shift ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
+    statement = statement.replace("None", "NULL")
     with open("../insert_statements/tactical_shift.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
     
@@ -649,6 +671,13 @@ def convert_json_to_sql_events(file_path):
     with open(f"../statsbomb_data/events/{file_path}", 'r', encoding='utf-8') as file:
         json_data = json.load(file)
     
+    # for data in json_data:
+    #     if "dribble" in data.keys():
+    #         for key in data["dribble"].keys():
+    #             if not key == "outcome":
+    #                 print(key, data["dribble"][key], end=' ')
+    #                 print()
+
     statements = []
     for data in json_data:
         statements += (generate_insert_statement_events("events", data, os.path.splitext(file_path)[0])) # Replace 'YourTableName' with your actual table name
