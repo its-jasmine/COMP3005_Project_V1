@@ -80,74 +80,74 @@ def generate_insert_statement_events(table_name, data, match_id):
         generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
 
     data_keys = data.keys()
-    # if "ball_recovery" in data_keys:
-    #     generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
+    if "ball_recovery" in data_keys:
+        generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
 
-    # if "dribble" in data_keys:
-    #     generate_insert_statement_dribble(data["dribble"], data["id"])
+    if "dribble" in data_keys:
+        generate_insert_statement_dribble(data["dribble"], data["id"])
 
     if "shot" in data_keys:
         generate_insert_statement_shot(data["shot"], data["id"])
 
-    # if "injury_stoppage" in data_keys:
-    #     generate_insert_statement_injury_stoppage(data["injury_stoppage"], data["id"])
+    if "injury_stoppage" in data_keys:
+        generate_insert_statement_injury_stoppage(data["injury_stoppage"], data["id"])
 
-    # if "ball_receipt" in data_keys:
-    #     generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
+    if "ball_receipt" in data_keys:
+        generate_insert_statement_ball_receipt(data["ball_receipt"], data["id"])
 
-    # if "50_50" in data_keys:
-    #     generate_insert_statement_50_50(data, data["id"])
+    if "50_50" in data_keys:
+        generate_insert_statement_50_50(data, data["id"])
         
-    # if "block" in data_keys:
-    #     generate_insert_statement_block(data, data["id"])
+    if "block" in data_keys:
+        generate_insert_statement_block(data, data["id"])
         
-    # if "interception" in data_keys:
-    #     generate_insert_statement_interception(data["interception"], data["id"])
+    if "interception" in data_keys:
+        generate_insert_statement_interception(data["interception"], data["id"])
         
-    # if "bad_behaviour" in data_keys:
-    #     generate_insert_statement_bad_behaviour(data["bad_behaviour"], data["id"])
+    if "bad_behaviour" in data_keys:
+        generate_insert_statement_bad_behaviour(data["bad_behaviour"], data["id"])
         
-    # if data["type"]["name"] == "Player Off": # TODO may remove
-    #     generate_insert_statement_player_off(data, data["id"])
+    if data["type"]["name"] == "Player Off": # TODO may remove
+        generate_insert_statement_player_off(data, data["id"])
         
-    # if data["type"]["name"] == "Half End": # TODO may remove
-    #     generate_insert_statement_half_end(data, data["id"])
+    if data["type"]["name"] == "Half End": # TODO may remove
+        generate_insert_statement_half_end(data, data["id"])
         
-    # if "carry" in data_keys:
-    #     generate_insert_statement_carry(data["carry"], data["id"])
+    if "carry" in data_keys:
+        generate_insert_statement_carry(data["carry"], data["id"])
         
-    # if data["type"]["name"] == "Foul Won":
-    #     generate_insert_statement_foul_won(data, data["id"])
+    if data["type"]["name"] == "Foul Won":
+        generate_insert_statement_foul_won(data, data["id"])
         
-    # if data["type"]["name"] == "Substitution":
-    #     try:
-    #         generate_insert_statement_substitution(data["substitution"], data["id"])
-    #     except KeyError:
-    #         generate_insert_statement_substitution(data["stta"], data["id"])
+    if data["type"]["name"] == "Substitution":
+        try:
+            generate_insert_statement_substitution(data["substitution"], data["id"])
+        except KeyError:
+            generate_insert_statement_substitution(data["stta"], data["id"])
 
-    # if data["type"]["name"] == "Starting XI":
-    #     generate_insert_statement_starting_xi(data["tactics"], data["id"])
+    if data["type"]["name"] == "Starting XI":
+        generate_insert_statement_starting_xi(data["tactics"], data["id"])
 
-    # if data["type"]["name"] == "Tactical Shift":
-    #     generate_insert_statement_tactical_shift(data["tactics"], data["id"])
+    if data["type"]["name"] == "Tactical Shift":
+        generate_insert_statement_tactical_shift(data["tactics"], data["id"])
 
-    # id = data["id"]
-    # if data.get('type')['name'] == "Clearance":
-    #     generate_insert_statement_clearance(data.get("clearance"), id)
-    # elif data.get('type')['name'] == "Goal Keeper":
-    #     generate_insert_statement_goal_keeper(data.get("goalkeeper"), id)
-    # elif data.get('type')['name'] == "Foul Committed":
-    #     generate_insert_statement_foul_committed(data.get("foul_committed"), id)
-    # elif data.get('type')['name'] == "Miscontrol":
-    #     generate_insert_statement_miscontrol(data.get("miscontrol"), id)
-    # elif data.get('type')['name'] == "Dribbled Past":
-    #     generate_insert_statement_dribble_past(data.get("counterpress"), id)
-    # elif data.get('type')['name'] == "Pressure":
-    #     generate_insert_statement_pressure(data.get("counterpress"), id)
-    # elif data.get('type')['name'] == "Half Start":
-    #     generate_insert_statement_half_start(data.get("half_start"), id)
-    # elif data.get('type')['name'] == "Duel":
-    #     generate_insert_statement_duel(data.get("duel"), id)
+    id = data["id"]
+    if data.get('type')['name'] == "Clearance":
+        generate_insert_statement_clearance(data.get("clearance"), id)
+    elif data.get('type')['name'] == "Goal Keeper":
+        generate_insert_statement_goal_keeper(data.get("goalkeeper"), id)
+    elif data.get('type')['name'] == "Foul Committed":
+        generate_insert_statement_foul_committed(data.get("foul_committed"), id)
+    elif data.get('type')['name'] == "Miscontrol":
+        generate_insert_statement_miscontrol(data.get("miscontrol"), id)
+    elif data.get('type')['name'] == "Dribbled Past":
+        generate_insert_statement_dribble_past(data.get("counterpress"), id)
+    elif data.get('type')['name'] == "Pressure":
+        generate_insert_statement_pressure(data.get("counterpress"), id)
+    elif data.get('type')['name'] == "Half Start":
+        generate_insert_statement_half_start(data.get("half_start"), id)
+    elif data.get('type')['name'] == "Duel":
+        generate_insert_statement_duel(data.get("duel"), id)
     
     return statements
 
