@@ -1,0 +1,4 @@
+INSERT INTO tactical_shift (event_id, formation, lineup_id) VALUES ('3ffa05fd-8046-46cb-97c9-5add5a15ac74', 433, 2) ON CONFLICT (event_id) DO NOTHING;
+INSERT INTO tactical_shift (event_id, formation, lineup_id) VALUES ('0363ba7c-4a9e-42cf-937a-85aa5adb07ce', 442, 3) ON CONFLICT (event_id) DO NOTHING;
+INSERT INTO tactical_shift (event_id, formation, lineup_id) VALUES ('f938c9cd-6f51-4b2a-be0e-bc145f468d5e', 433, 4) ON CONFLICT (event_id) DO NOTHING;
+INSERT INTO tactical_shift (event_id, formation, lineup_id) VALUES ('92035681-1490-40fc-acf6-cb593a7172d2', 433, 5) ON CONFLICT (event_id) DO NOTHING;
