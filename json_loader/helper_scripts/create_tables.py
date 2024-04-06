@@ -8,6 +8,21 @@ def generate_create_statement_competitions():
            "country             VARCHAR(255) NOT NULL, \n" \
            "PRIMARY KEY (competition_id, season_id));"
 
+def generate_create_statement_lineups():
+    return "CREATE TABLE IF NOT EXISTS lineups \n" \
+            "(lineup_id                 INTEGER NOT NULL PRIMARY KEY, \n" \
+            "goalkeeper                 INTEGER NOT NULL,  \n" \
+            "right_back                 INTEGER NOT NULL,  \n" \
+            "right_center_back          INTEGER NOT NULL, \n" \
+            "left_center_back           INTEGER NOT NULL, \n" \
+            "left_back                  INTEGER NOT NULL, \n" \
+            "right_defensive_midfield   INTEGER NOT NULL, \n" \
+            "left_defensive_midfield    INTEGER NOT NULL, \n" \
+            "right_midfield             INTEGER NOT NULL, \n" \
+            "left_midfield              INTEGER NOT NULL, \n" \
+            "right_center_forward       INTEGER NOT NULL, \n" \
+            "left_center_forward        INTEGER NOT NULL);"
+
 def generate_create_statement_pass():
     return "CREATE TABLE IF NOT EXISTS pass \n" \
            "(event_id           VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
@@ -107,10 +122,12 @@ def generate_create_statement_events():
             "location_x             FLOAT, \n" \
             "location_y             FLOAT, \n" \
             "under_pressure       BOOLEAN, \n" \
-            "off_camera           INTEGER, \n" \
-            "out                  INTEGER, \n" \
+            "off_camera           BOOLEAN, \n" \
+            "out                  BOOLEAN, \n" \
+            "player_id            INTEGER, \n" \
             "FOREIGN KEY (match_id) REFERENCES matches(match_id), \n" \
             "FOREIGN KEY (team_id) REFERENCES teams(team_id), \n" \
+            "FOREIGN KEY (player_id) REFERENCES players(player_id), \n" \
             "FOREIGN KEY (possession_team_id) REFERENCES teams(team_id));"
 
 def generate_create_statement_ball_recovery():
@@ -296,7 +313,7 @@ def generate_create_statement_duel():
            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
 
 create_statements = []
-
+create_statements.append(generate_create_statement_lineups())
 create_statements.append(generate_create_statement_teams())
 create_statements.append(generate_create_statement_competitions())
 create_statements.append(generate_create_statement_stadiums())
@@ -329,7 +346,6 @@ create_statements.append(generate_create_statement_foul_won())
 create_statements.append(generate_create_statement_dribble())
 create_statements.append(generate_create_statement_player_off())
 create_statements.append(generate_create_statement_pass())
-
 with open("../insert_statements/ddl.sql", "a", encoding='utf-8') as file:
     for statement in create_statements:
         file.write(statement + "\n")

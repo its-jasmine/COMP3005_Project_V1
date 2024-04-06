@@ -20,7 +20,8 @@ columns_names = keys = [
     "location_y",
     "under_pressure",
     "off_camera",
-    "out"
+    "out",
+    "player_id"
 ]
 columns_names_lineup = ['lineup_id', 'goalkeeper', 'right_back', 'right_center_back', 'left_center_back', 'left_back', 'right_defensive_midfield', 'left_defensive_midfield', 'right_midfield', 'left_midfield', 'right_center_forward', 'left_center_forward']
 
@@ -68,6 +69,11 @@ def generate_insert_statement_events(table_name, data, match_id):
 
     try:
         values.append(data["out"])
+    except KeyError:
+        values.append(None)
+
+    try:
+        values.append(data["player"]["id"])
     except KeyError:
         values.append(None)
 
@@ -156,7 +162,6 @@ def generate_insert_statement_ball_recovery(data, event_id):
             values.append(data[name])
         except KeyError:
             values.append(None)
-            values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
@@ -177,7 +182,6 @@ def generate_insert_statement_dribble(data, event_id):
             else:
                 values.append(data[name])
         except KeyError:
-            values.append(None)
             values.append(None)
 
     columns = ', '.join(columns_names) 
@@ -206,7 +210,6 @@ def generate_insert_statement_shot(data, event_id):
                 values.append(data[name])
         except KeyError:
             values.append(None)
-            values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
@@ -224,7 +227,6 @@ def generate_insert_statement_injury_stoppage(data, event_id):
         try:
             values.append(data[name])
         except KeyError:
-            values.append(None)
             values.append(None)
 
     columns = ', '.join(columns_names) 
@@ -244,7 +246,6 @@ def generate_insert_statement_ball_receipt(data, event_id):
             values.append(data[name]["name"])
         except KeyError:
             values.append(None)
-            values.append(None)
 
     columns = ', '.join(columns_names) 
     values = ', '.join(map(repr, values))
@@ -262,7 +263,6 @@ def generate_insert_statement_substitution(data, event_id):
         try:
             values.append(data[name]["name"])
         except KeyError:
-            values.append(None)
             values.append(None)
 
     columns = ', '.join(columns_names) 
@@ -697,23 +697,23 @@ print(len(sql_statements))
 sql_statements = list(set(sql_statements)) # deduplicate
 print(len(sql_statements))
 
-# fourth = round(len(sql_statements) / 4)
-# for statement in sql_statements[:fourth]:
-#     with open("../insert_statements/events1.sql", "a", encoding='utf-8') as file:
-#         statement = statement.replace("None", "NULL")
-#         file.write(statement + "\n")
-# for statement in sql_statements[fourth:fourth*2]:
-#     with open("../insert_statements/events2.sql", "a", encoding='utf-8') as file:
-#         statement = statement.replace("None", "NULL")
-#         file.write(statement + "\n")
-# for statement in sql_statements[fourth*2:fourth*3]:
-#     with open("../insert_statements/events3.sql", "a", encoding='utf-8') as file:
-#         statement = statement.replace("None", "NULL")
-#         file.write(statement + "\n")
-# for statement in sql_statements[fourth*3:]:
-#     with open("../insert_statements/events4.sql", "a", encoding='utf-8') as file:
-#         statement = statement.replace("None", "NULL")
-#         file.write(statement + "\n")
+fourth = round(len(sql_statements) / 4)
+for statement in sql_statements[:fourth]:
+    with open("../insert_statements/events1.sql", "a", encoding='utf-8') as file:
+        statement = statement.replace("None", "NULL")
+        file.write(statement + "\n")
+for statement in sql_statements[fourth:fourth*2]:
+    with open("../insert_statements/events2.sql", "a", encoding='utf-8') as file:
+        statement = statement.replace("None", "NULL")
+        file.write(statement + "\n")
+for statement in sql_statements[fourth*2:fourth*3]:
+    with open("../insert_statements/events3.sql", "a", encoding='utf-8') as file:
+        statement = statement.replace("None", "NULL")
+        file.write(statement + "\n")
+for statement in sql_statements[fourth*3:]:
+    with open("../insert_statements/events4.sql", "a", encoding='utf-8') as file:
+        statement = statement.replace("None", "NULL")
+        file.write(statement + "\n")
     
 
 
