@@ -93,30 +93,32 @@ def generate_create_statement_events():
 def generate_create_statement_ball_recovery():
     return "CREATE TABLE IF NOT EXISTS ball_recovery \n" \
             "(event_id            VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-            "offensive            VARCHAR(255),  \n" \
-            "recovery_failure     VARCHAR(255),  \n" \
+            "offensive            BOOLEAN,  \n" \
+            "recovery_failure     BOOLEAN,  \n" \
             "FOREIGN KEY (event_id) REFERENCES events(event_id));"
 
 def generate_create_statement_dribble():
     return "CREATE TABLE IF NOT EXISTS dribble \n" \
             "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-            "overrun      VARCHAR(255),  \n" \
-            "nutmeg       VARCHAR(255),  \n" \
+            "overrun      BOOLEAN,  \n" \
+            "nutmeg       BOOLEAN,  \n" \
             "outcome      VARCHAR(255),  \n" \
-            "no_touch     VARCHAR(255),  \n" \
+            "no_touch     BOOLEAN,  \n" \
             "FOREIGN KEY (event_id) REFERENCES events(event_id));"
 
 def generate_create_statement_shot():
     return "CREATE TABLE IF NOT EXISTS shot \n" \
             "(event_id         VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
             "key_pass_id       VARCHAR(255),  \n" \
-            "end_location      VARCHAR(255),  \n" \
-            "aerial_won        VARCHAR(255),  \n" \
-            "follows_dribble   VARCHAR(255),  \n" \
-            "first_time        VARCHAR(255),  \n" \
-            "open_goal         VARCHAR(255),  \n" \
-            "statsbomb_xg      INTEGER,  \n" \
-            "deflected         VARCHAR(255),  \n" \
+            "end_location_x      VARCHAR(255),  \n" \
+            "end_location_y     VARCHAR(255),  \n" \
+            "end_location_z      VARCHAR(255),  \n" \
+            "aerial_won        BOOLEAN,  \n" \
+            "follows_dribble   BOOLEAN,  \n" \
+            "first_time        BOOLEAN,  \n" \
+            "open_goal         BOOLEAN,  \n" \
+            "statsbomb_xg      FLOAT,  \n" \
+            "deflected         BOOLEAN,  \n" \
             "technique         VARCHAR(255),  \n" \
             "body_part         VARCHAR(255),  \n" \
             "type              VARCHAR(255),  \n" \
@@ -126,7 +128,7 @@ def generate_create_statement_shot():
 def generate_create_statement_injury_stoppage():
     return "CREATE TABLE IF NOT EXISTS injury_stoppage \n" \
             "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-            "in_chain      VARCHAR(255),  \n" \
+            "in_chain     BOOLEAN,  \n" \
             "FOREIGN KEY (event_id) REFERENCES events(event_id));"
 
 def generate_create_statement_ball_receipt():
