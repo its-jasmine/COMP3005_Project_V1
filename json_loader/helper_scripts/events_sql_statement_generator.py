@@ -51,7 +51,8 @@ def generate_create_statement_ball_recovery():
     return "CREATE TABLE IF NOT EXISTS ball_recovery \n" \
             "(event_id            VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
             "offensive            VARCHAR(255),  \n" \
-            "recovery_failure     VARCHAR(255) );"
+            "recovery_failure     VARCHAR(255),  \n" \
+            "FOREIGN KEY event_id REFERENCES events(event_id));"
 
 def generate_create_statement_dribble():
     return "CREATE TABLE IF NOT EXISTS dribble \n" \
@@ -59,7 +60,8 @@ def generate_create_statement_dribble():
             "overrun      VARCHAR(255),  \n" \
             "nutmeg       VARCHAR(255),  \n" \
             "outcome      VARCHAR(255),  \n" \
-            "no_touch     VARCHAR(255));"
+            "no_touch     VARCHAR(255),  \n" \
+            "FOREIGN KEY event_id REFERENCES events(event_id));"
 
 def generate_create_statement_shot():
     return "CREATE TABLE IF NOT EXISTS shot \n" \
@@ -75,36 +77,41 @@ def generate_create_statement_shot():
             "technique         VARCHAR(255),  \n" \
             "body_part         VARCHAR(255),  \n" \
             "type              VARCHAR(255),  \n" \
-            "outcome           VARCHAR(255));"
+            "outcome           VARCHAR(255),  \n" \
+            "FOREIGN KEY event_id REFERENCES events(event_id));"
 
 def generate_create_statement_injury_stoppage():
     return "CREATE TABLE IF NOT EXISTS injury_stoppage \n" \
             "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-            "in_chain      VARCHAR(255));"
+            "in_chain      VARCHAR(255),  \n" \
+            "FOREIGN KEY event_id REFERENCES events(event_id));"
 
 def generate_create_statement_ball_receipt():
     return "CREATE TABLE IF NOT EXISTS ball_receipt \n" \
             "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-            "outcome      VARCHAR(255));"
+            "outcome      VARCHAR(255),  \n" \
+            "FOREIGN KEY event_id REFERENCES events(event_id));"
 
 def generate_create_statement_substitution():
     return "CREATE TABLE IF NOT EXISTS substitution \n" \
             "(event_id      VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
             "replacement    VARCHAR(255),  \n" \
-            "outcome        VARCHAR(255));"
+            "outcome        VARCHAR(255),  \n" \
+            "FOREIGN KEY event_id REFERENCES events(event_id));"
 
 def generate_create_statement_starting_xi():
     return "CREATE TABLE IF NOT EXISTS starting_xi \n" \
             "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
             "formation    INTEGER,  \n" \
             "lineup_id    INTEGER,  \n" \
-            "FOREIGN KEY event_id REFERENCES events (event_id));"
+            "FOREIGN KEY event_id REFERENCES events(event_id));"
 
 def generate_create_statement_tactical_shift():
     return "CREATE TABLE IF NOT EXISTS tactical_shift \n" \
             "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
             "formation    INTEGER,  \n" \
-            "lineup_id    INTEGER);"
+            "lineup_id    INTEGER,  \n" \
+            "FOREIGN KEY event_id REFERENCES events(event_id));"
 
 # match_id = name of file
 # I'm confused
