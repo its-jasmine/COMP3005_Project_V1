@@ -1,2 +1,0 @@
-INSERT INTO starting_xi (event_id, formation, lineup_id) VALUES ('9f6e2ecf-6685-45df-a62e-c2db3090f6c1', 442, 0) ON CONFLICT (event_id) DO NOTHING;
-INSERT INTO starting_xi (event_id, formation, lineup_id) VALUES ('0300039d-150d-41e4-b29a-76602ef002e6', 451, 1) ON CONFLICT (event_id) DO NOTHING;

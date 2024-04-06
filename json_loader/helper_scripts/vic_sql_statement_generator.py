@@ -246,11 +246,11 @@ sql_statements.append(generate_create_statement_half_start())
 sql_statements.append(generate_create_statement_miscontrol())
 sql_statements.append(generate_create_statement_pressure())
 
-for match_id in match_id_list:
-    sql_statements += generate_insert_statement(f"../statsbomb_data/events/{match_id}.json")
+#for match_id in match_id_list:
+#    sql_statements += generate_insert_statement(f"../statsbomb_data/events/{match_id}.json")
     
-sql_statements = set(sql_statements) # deduplicate
+#sql_statements = set(sql_statements) # deduplicate
 
-#for statement in sql_statements:
+for statement in sql_statements:
     # statement = statement.replace('None', 'NULL')
-    # print(statement)
+    print(statement)

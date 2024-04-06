@@ -1,7 +1,16 @@
 import json
-from utility import match_id_list, execute_query
+from unidecode import unidecode
+import re
 
 columns_names = ["player_id", "player_name", "player_nickname", "jersey_number", "country"]
+
+match_id_list = []
+with open("output", 'r') as file:
+    file.seek(0)
+    for line in file:
+        match_id = line.strip()
+        match_id_list.append(match_id)
+
 
 def generate_create_statement():
     return "CREATE TABLE IF NOT EXISTS players \n" \
@@ -40,17 +49,22 @@ file_path = "output"  # Replace 'your_file.json' with the actual file path
 
 # Convert JSON data to SQL statements
 sql_statements = []
-sql_statements.append(generate_create_statement())
-print(generate_create_statement())
+#sql_statements.append(generate_create_statement())
+#print(generate_create_statement())
 
 for match_id in match_id_list:
     sql_statements += convert_json_to_sql(f"../statsbomb_data/lineups/{match_id}.json")
 
 # Print SQL statements
 
-execute_query(generate_create_statement())
-sql_statements = set(sql_statements) # deduplicate
-for statement in sql_statements:
-    statement = statement.replace("None", "NULL")
-    execute_query(statement)
-    # print(statement)
+sql_statements = set(sql_statements)
+
+with open("../insert_statements/players.sql", "a", encoding='utf-8') as file:
+    for statement in sql_statements:
+        statement = statement.replace("None", "NULL")
+        statement = statement.replace("''", "")
+        statement = statement.replace('"', "'")
+        statement = unidecode(statement) # removes accents 
+        statement = re.sub(r"[a-zA-Z]+'[a-zA-Z\s]", lambda x: x.group().replace("'", ""), statement) # replace single apostrophe
+        statement = statement.replace("'Jay-Jay", 'Jay-Jay')
+        file.write(statement + "\n")

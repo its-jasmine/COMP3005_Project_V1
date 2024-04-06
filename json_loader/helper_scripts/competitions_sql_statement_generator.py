@@ -50,7 +50,7 @@ def convert_json_to_sql(file_path):
 
 
 sql_statements = []
-sql_statements.append(generate_create_statement())
+#sql_statements.append(generate_create_statement())
 
 sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/2/44.json")
 sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/11/4.json")
@@ -61,3 +61,9 @@ sql_statements = set(sql_statements)
 
 for statement in sql_statements:
     print(statement)
+
+
+with open("../insert_statements/competitions.sql", "a", encoding='utf-8') as file:
+    for statement in sql_statements:
+        statement = statement.replace("None", "NULL")
+        file.write(statement + "\n")

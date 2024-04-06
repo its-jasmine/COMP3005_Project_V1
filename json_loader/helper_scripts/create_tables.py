@@ -8,6 +8,28 @@ def generate_create_statement_competitions():
            "country             VARCHAR(255) NOT NULL, \n" \
            "PRIMARY KEY (competition_id, season_id));"
 
+def generate_create_statement_pass():
+    return "CREATE TABLE IF NOT EXISTS pass \n" \
+           "(event_id           VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+           "recepient_id        INTEGER,  \n" \
+           "length              FLOAT,  \n" \
+           "angle               FLOAT, \n" \
+           "height              VARCHAR(255), \n" \
+           "end_location_x      FLOAT, \n" \
+           "end_location_y      FLOAT, \n" \
+           "assisted_shot_id    VARCHAR(255), \n"\
+           "deflected           BOOLEAN, \n" \
+           "miscommunication    BOOLEAN, \n"\
+           "cross_              BOOLEAN, \n"\
+           "switch              BOOLEAN, \n"\
+           "shot_assist         BOOLEAN, \n" \
+           "goal_assist         BOOLEAN, \n"\
+           "body_part           VARCHAR(255), \n"\
+           "type                VARCHAR(255), \n"\
+           "outcome             VARCHAR(255), \n"\
+           "technique           VARCHAR(255),  \n" \
+           "FOREIGN KEY (event_id) REFERENCES events(event_id));"
+
 def generate_create_statement_teams():
     return "CREATE TABLE IF NOT EXISTS teams \n" \
            "(team_id     INTEGER NOT NULL PRIMARY KEY, \n" \
@@ -82,8 +104,9 @@ def generate_create_statement_events():
             "play_pattern         VARCHAR(255) NOT NULL, \n" \
             "team_id              INTEGER, \n" \
             "duration             FLOAT, \n" \
-            "location             INTEGER, \n" \
-            "under_pressure       INTEGER, \n" \
+            "location_x             FLOAT, \n" \
+            "location_y             FLOAT, \n" \
+            "under_pressure       BOOLEAN, \n" \
             "off_camera           INTEGER, \n" \
             "out                  INTEGER, \n" \
             "FOREIGN KEY (match_id) REFERENCES matches(match_id), \n" \
@@ -212,12 +235,12 @@ def generate_create_statement_clearance():
 def generate_create_statement_goal_keeper():
     return "CREATE TABLE IF NOT EXISTS goal_keeper \n" \
            "(event_id       VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "position        VARCHAR(255) NOT NULL, \n" \
-           "end_location_x  FLOAT NOT NULL, \n" \
-           "end_location_y  FLOAT NOT NULL, \n" \
+           "position        VARCHAR(255), \n" \
+           "end_location_x  FLOAT, \n" \
+           "end_location_y  FLOAT, \n" \
            "technique       VARCHAR(255), \n" \
            "body_part       VARCHAR(255), \n" \
-           "type            VARCHAR(255) NOT NULL, \n" \
+           "type            VARCHAR(255), \n" \
            "outcome         VARCHAR(255), \n" \
            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
 
@@ -296,7 +319,7 @@ create_statements.append(generate_create_statement_carry())
 create_statements.append(generate_create_statement_foul_won())
 create_statements.append(generate_create_statement_dribble())
 create_statements.append(generate_create_statement_player_off())
-#create_statements.append(generate_create_statement_pass())
+create_statements.append(generate_create_statement_pass())
 
 with open("../insert_statements/ddl.sql", "a", encoding='utf-8') as file:
     for statement in create_statements:
