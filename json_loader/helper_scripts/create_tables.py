@@ -43,6 +43,7 @@ def generate_create_statement_pass():
            "type                VARCHAR(255), \n"\
            "outcome             VARCHAR(255), \n"\
            "technique           VARCHAR(255),  \n" \
+           "through_ball        BOOLEAN, \n"\
            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
 
 def generate_create_statement_teams():

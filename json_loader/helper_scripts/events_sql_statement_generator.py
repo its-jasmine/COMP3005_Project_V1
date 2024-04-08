@@ -637,7 +637,8 @@ def generate_insert_statement_pass(data, event_id):
                      "body_part",
                      "type", # only a few have a value for this
                      "outcome", # only a few have a value for this
-                     "technique" # only a few have a value for this
+                     "technique", # only a few have a value for this
+                     "through_ball"
                      ]
     values = []
     values.append(event_id)
