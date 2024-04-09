@@ -223,7 +223,26 @@ def Q_3(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    SELECT PLAYER_NAME, SHOT_COUNT
+    FROM
+        (SELECT PLAYER_ID, COUNT (*) AS SHOT_COUNT
+            FROM (
+                    (SELECT MATCH_ID, PLAYER_ID
+                        FROM EVENTS, SHOT
+                        WHERE EVENTS.EVENT_ID = SHOT.EVENT_ID AND SHOT.FIRST_TIME = 'true'
+                        ) AS PLAYER_SHOTS
+                NATURAL JOIN
+                    (SELECT MATCH_ID
+                        FROM COMPETITIONS
+                        NATURAL JOIN MATCHES
+                        WHERE COMPETITION_NAME = 'La Liga'
+                            AND SEASON_NAME in ('2018/2019', '2019/2020', '2020/2021')) AS SEASON_MATCH_IDS)
+            GROUP BY PLAYER_ID
+            HAVING COUNT(*) > 0)
+    NATURAL JOIN PLAYERS
+    ORDER BY SHOT_COUNT DESC;
+    """
 
     #==========================================================================
 
@@ -277,7 +296,25 @@ def Q_6(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    SELECT TEAM_NAME, SHOT_COUNT
+    FROM
+        (SELECT TEAM_ID, COUNT (*) AS SHOT_COUNT
+            FROM (
+                    (SELECT MATCH_ID, TEAM_ID
+                        FROM EVENTS
+                        WHERE EVENTS.TYPE = 'Shot') AS TEAM_SHOTS
+                NATURAL JOIN
+                    (SELECT MATCH_ID
+                        FROM COMPETITIONS
+                        NATURAL JOIN MATCHES
+                        WHERE COMPETITION_NAME = 'Premier League'
+                            AND SEASON_NAME = '2003/2004') AS SEASON_MATCH_IDS)
+            GROUP BY TEAM_ID
+            HAVING COUNT(*) > 0)
+    NATURAL JOIN TEAMS
+    ORDER BY SHOT_COUNT DESC;
+    """
 
     #==========================================================================
 
@@ -313,7 +350,26 @@ def Q_8(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    SELECT TEAM_NAME, THROUGH_BALL_COUNT
+    FROM
+        (SELECT TEAM_ID, COUNT (*) AS THROUGH_BALL_COUNT
+            FROM (
+                    (SELECT MATCH_ID, TEAM_ID
+                        FROM EVENTS, PASS
+                        WHERE EVENTS.EVENT_ID = PASS.EVENT_ID AND PASS.TECHNIQUE = 'Through Ball'
+                        ) AS TEAM_PASSES
+                NATURAL JOIN
+                    (SELECT MATCH_ID
+                        FROM COMPETITIONS
+                        NATURAL JOIN MATCHES
+                        WHERE COMPETITION_NAME = 'La Liga'
+                            AND SEASON_NAME = '2020/2021') AS SEASON_MATCH_IDS)
+            GROUP BY TEAM_ID
+            HAVING COUNT(*) > 0)
+    NATURAL JOIN TEAMS
+    ORDER BY THROUGH_BALL_COUNT DESC;
+    """
 
     #==========================================================================
 
