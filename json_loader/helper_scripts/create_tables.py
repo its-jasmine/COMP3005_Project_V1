@@ -26,7 +26,7 @@ def generate_create_statement_lineups():
 def generate_create_statement_pass():
     return "CREATE TABLE IF NOT EXISTS pass \n" \
            "(event_id           VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "recepient_id        INTEGER,  \n" \
+           "recipient_id        INTEGER,  \n" \
            "length              FLOAT,  \n" \
            "angle               FLOAT, \n" \
            "height              VARCHAR(255), \n" \

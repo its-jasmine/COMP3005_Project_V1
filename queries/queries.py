@@ -315,23 +315,21 @@ def Q_5(cursor, conn, execution_time):
     # Enter QUERY within the quotes:
     
     query = """
-    SELECT PLAYER_NAME, PASS_COUNT
-    FROM
-        (SELECT PLAYER_ID, COUNT (*) AS PASS_COUNT
-            FROM (
-                    (SELECT MATCH_ID, PLAYER_ID
-                        FROM EVENTS
-                        WHERE EVENTS.TYPE = 'Pass') AS TEAM_PASSES
-                NATURAL JOIN
-                    (SELECT MATCH_ID
-                        FROM COMPETITIONS
-                        NATURAL JOIN MATCHES
-                        WHERE COMPETITION_NAME = 'Premier League'
-                            AND SEASON_NAME = '2003/2004') AS SEASON_MATCH_IDS)
-            GROUP BY PLAYER_ID
-            HAVING COUNT(*) > 0)
-    NATURAL JOIN PLAYERS
-    ORDER BY PASS_COUNT DESC; """
+    SELECT PLAYERS.PLAYER_NAME, COUNT (*) AS PASS_COUNT
+    FROM (
+        (SELECT MATCH_ID, RECIPIENT_ID
+            FROM EVENTS, PASS
+            WHERE EVENTS.EVENT_ID = PASS.EVENT_ID) AS PASS_RECIPIENTS
+        NATURAL JOIN
+        (SELECT MATCH_ID
+            FROM COMPETITIONS
+            NATURAL JOIN MATCHES
+            WHERE COMPETITION_NAME = 'Premier League'
+                AND SEASON_NAME = '2003/2004') AS SEASON_MATCH_IDS
+        INNER JOIN PLAYERS ON RECIPIENT_ID = PLAYERS.PLAYER_ID)
+    GROUP BY PLAYERS.PLAYER_NAME
+    HAVING COUNT(*) > 0
+    ORDER BY PASS_COUNT DESC;"""
 
     #==========================================================================
 

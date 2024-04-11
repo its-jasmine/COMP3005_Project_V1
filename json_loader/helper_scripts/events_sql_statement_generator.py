@@ -621,7 +621,7 @@ def generate_insert_statement_duel(data, id):
 def generate_insert_statement_pass(data, event_id):
     # removed attributes: "backheel", "cutback",
     columns_names = ["event_id",
-                     "recepient_id",
+                     "recipient_id",
                      "length",
                      "angle",
                      "height",
