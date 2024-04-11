@@ -260,7 +260,24 @@ def Q_4(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    SELECT TEAM_NAME, PASS_COUNT
+    FROM
+        (SELECT TEAM_ID, COUNT (*) AS PASS_COUNT
+            FROM (
+                    (SELECT MATCH_ID, TEAM_ID
+                        FROM EVENTS
+                        WHERE EVENTS.TYPE = 'Pass') AS TEAM_PASSES
+                NATURAL JOIN
+                    (SELECT MATCH_ID
+                        FROM COMPETITIONS
+                        NATURAL JOIN MATCHES
+                        WHERE COMPETITION_NAME = 'La Liga'
+                            AND SEASON_NAME = '2020/2021') AS SEASON_MATCH_IDS)
+            GROUP BY TEAM_ID
+            HAVING COUNT(*) > 0)
+    NATURAL JOIN TEAMS
+    ORDER BY PASS_COUNT DESC; """
 
     #==========================================================================
 
@@ -278,7 +295,24 @@ def Q_5(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    SELECT PLAYER_NAME, PASS_COUNT
+    FROM
+        (SELECT PLAYER_ID, COUNT (*) AS PASS_COUNT
+            FROM (
+                    (SELECT MATCH_ID, PLAYER_ID
+                        FROM EVENTS
+                        WHERE EVENTS.TYPE = 'Pass') AS TEAM_PASSES
+                NATURAL JOIN
+                    (SELECT MATCH_ID
+                        FROM COMPETITIONS
+                        NATURAL JOIN MATCHES
+                        WHERE COMPETITION_NAME = 'Premier League'
+                            AND SEASON_NAME = '2003/2004') AS SEASON_MATCH_IDS)
+            GROUP BY PLAYER_ID
+            HAVING COUNT(*) > 0)
+    NATURAL JOIN PLAYERS
+    ORDER BY PASS_COUNT DESC; """
 
     #==========================================================================
 
@@ -387,7 +421,24 @@ def Q_9(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    SELECT PLAYER_NAME, SUCCESSFUL_DRIBBLE_COUNT
+    FROM
+        (SELECT PLAYER_ID, COUNT (*) AS SUCCESSFUL_DRIBBLE_COUNT
+            FROM (
+                    (SELECT MATCH_ID, PLAYER_ID
+                        FROM Events, DRIBBLE
+                        WHERE events.event_id = dribble.event_id AND DRIBBLE.OUTCOME = 'Complete') AS DRIBBLES
+                NATURAL JOIN
+                    (SELECT MATCH_ID
+                        FROM COMPETITIONS
+                        NATURAL JOIN MATCHES
+                        WHERE COMPETITION_NAME = 'La Liga'
+                            AND SEASON_NAME in ('2018/2019', '2019/2020', '2020/2021')) AS SEASON_MATCH_IDS)
+            GROUP BY PLAYER_ID
+            HAVING COUNT(*) > 0)
+    NATURAL JOIN PLAYERS
+    ORDER BY SUCCESSFUL_DRIBBLE_COUNT DESC; """
 
     #==========================================================================
 
