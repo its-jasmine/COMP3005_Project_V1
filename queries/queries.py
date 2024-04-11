@@ -295,7 +295,22 @@ def Q_5(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    SELECT PLAYERS.PLAYER_NAME, COUNT (*) AS PASS_COUNT
+    FROM (
+        (SELECT MATCH_ID, RECIPIENT_ID
+            FROM EVENTS, PASS
+            WHERE EVENTS.EVENT_ID = PASS.EVENT_ID) AS PASS_RECIPIENTS
+        NATURAL JOIN
+        (SELECT MATCH_ID
+            FROM COMPETITIONS
+            NATURAL JOIN MATCHES
+            WHERE COMPETITION_NAME = 'Premier League'
+                AND SEASON_NAME = '2003/2004') AS SEASON_MATCH_IDS
+        INNER JOIN PLAYERS ON RECIPIENT_ID = PLAYERS.PLAYER_ID)
+    GROUP BY PLAYERS.PLAYER_NAME
+    HAVING COUNT(*) > 0
+    ORDER BY PASS_COUNT DESC;"""
 
     #==========================================================================
 
