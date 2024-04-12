@@ -173,7 +173,7 @@ def Q_1(cursor, conn, execution_time):
         SEASON_MATCH_IDS AS (
             SELECT MATCH_ID
             FROM COMPETITIONS NATURAL JOIN MATCHES
-            WHERE COMPETITION_NAME = 'La Liga' AND SEASON_NAME = '2018/2019'),
+            WHERE COMPETITION_NAME = 'La Liga' AND SEASON_NAME = '2020/2021'),
             
         PLAYERS_XG_SCORES_IN_SEASON AS (
             SELECT PLAYER_ID, STATSBOMB_XG
@@ -290,9 +290,8 @@ def Q_4(cursor, conn, execution_time):
         
         PASSES_MADE AS (
             SELECT MATCH_ID, TEAM_ID
-            FROM EVENTS, PASS
-            WHERE EVENTS.EVENT_ID = PASS.EVENT_ID
-        )
+            FROM EVENTS INNER JOIN PASS ON EVENTS.EVENT_ID = PASS.EVENT_ID
+	    )
 	
     SELECT teams.TEAM_NAME, count(*) AS PASS_COUNT
     FROM PASSES_MADE NATURAL JOIN SEASON_MATCH_IDS NATURAL JOIN TEAMS
@@ -325,8 +324,7 @@ def Q_5(cursor, conn, execution_time):
         
         RECIPIENT_OF_PASSES AS (
             SELECT MATCH_ID, RECIPIENT_ID
-            FROM EVENTS, PASS
-            WHERE EVENTS.EVENT_ID = PASS.EVENT_ID
+            FROM EVENTS INNER JOIN PASS ON EVENTS.EVENT_ID = PASS.EVENT_ID
         )
 
     SELECT PLAYER_NAME, COUNT(*) AS PASS_RECIPIENT_COUNT
@@ -473,8 +471,8 @@ def Q_9(cursor, conn, execution_time):
 
         SUCCESSFUL_DRIBBLES AS (
             SELECT MATCH_ID, PLAYER_ID
-            FROM EVENTS, DRIBBLE
-            WHERE EVENTS.event_id = DRIBBLE.event_id AND DRIBBLE.OUTCOME = 'Complete'
+            FROM EVENTS NATURAL JOIN DRIBBLE
+            WHERE DRIBBLE.OUTCOME = 'Complete'
         )
 
     SELECT PLAYER_NAME, COUNT(*) AS SUCCESSFUL_DRIBBLE_COUNT
