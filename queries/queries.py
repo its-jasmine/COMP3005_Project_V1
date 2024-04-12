@@ -1,7 +1,7 @@
 # Created by Gabriel Martell
 
 '''
-Version 1.1 (04/02/2024)
+Version 1.11 (04/02/2024)
 =========================================================
 queries.py (Carleton University COMP3005 - Database Management Student Template Code)
 
@@ -29,10 +29,10 @@ The following is the connection information for this project. These settings are
 You must NOT change these settings - by default, db_host, db_port and db_username are as follows when first installing and utilizing psql.
 For the user "postgres", you must MANUALLY set the password to 1234.
 '''
-root_database_name = "ProjectV001"
-query_database_name = "ProjectV001"
+root_database_name = "project_database"
+query_database_name = "query_database"
 db_username = 'postgres'
-db_password = 'Password1!'
+db_password = '1234'
 db_host = 'localhost'
 db_port = '5432'
 
@@ -128,8 +128,8 @@ def get_time(cursor, conn, sql_query):
         else:
             print("Execution Time not found in EXPLAIN ANALYZE output.")
             return f"NA"
-    except:
-        print("[ERROR] Error getting time.")
+    except Exception as error:
+        print(f"[ERROR] Error getting time.\n{error}")
 
 
 # Write the results into some Q_n CSV. If the is an error with the query, it is a INC result - Do NOT Modify
@@ -141,7 +141,7 @@ def write_csv(execution_time, cursor, conn, i):
         rows = cursor.fetchall()
         filename = f"{dir_path}/Q_{i}.csv"
 
-        with open(filename, 'w', newline='') as csvfile:
+        with open(filename, 'w', encoding='utf-8', newline='') as csvfile:
             csvwriter = csv.writer(csvfile)
             
             # Write column names to the CSV file
@@ -206,24 +206,25 @@ def Q_2(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
 
-    query = """SELECT PLAYER_NAME, SHOT_COUNT
-            FROM
-                (SELECT PLAYER_ID, COUNT (*) AS SHOT_COUNT
-                    FROM (
-                            (SELECT MATCH_ID, PLAYER_ID
-                                FROM EVENTS
-                                WHERE EVENTS.TYPE = 'Shot') AS PLAYER_SHOTS
-                        NATURAL JOIN
-                            (SELECT MATCH_ID
-                                FROM COMPETITIONS
-                                NATURAL JOIN MATCHES
-                                WHERE COMPETITION_NAME = 'La Liga'
-                                    AND SEASON_NAME = '2020/2021') AS SEASON_MATCH_IDS)
-                    GROUP BY PLAYER_ID
-                    HAVING COUNT(*) > 0)
-            NATURAL JOIN PLAYERS
-            ORDER BY SHOT_COUNT DESC;
-            """
+    query = """
+    SELECT PLAYER_NAME, SHOT_COUNT
+    FROM
+        (SELECT PLAYER_ID, COUNT (*) AS SHOT_COUNT
+            FROM (
+                    (SELECT MATCH_ID, PLAYER_ID
+                        FROM EVENTS
+                        WHERE EVENTS.TYPE = 'Shot') AS PLAYER_SHOTS
+                NATURAL JOIN
+                    (SELECT MATCH_ID
+                        FROM COMPETITIONS
+                        NATURAL JOIN MATCHES
+                        WHERE COMPETITION_NAME = 'La Liga'
+                            AND SEASON_NAME = '2020/2021') AS SEASON_MATCH_IDS)
+            GROUP BY PLAYER_ID
+            HAVING COUNT(*) > 0)
+    NATURAL JOIN PLAYERS
+    ORDER BY SHOT_COUNT DESC;
+    """
 
     #==========================================================================
 
@@ -279,24 +280,24 @@ def Q_4(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """
-    SELECT TEAM_NAME, PASS_COUNT
-    FROM
-        (SELECT TEAM_ID, COUNT (*) AS PASS_COUNT
-            FROM (
-                    (SELECT MATCH_ID, TEAM_ID
-                        FROM EVENTS
-                        WHERE EVENTS.TYPE = 'Pass') AS TEAM_PASSES
-                NATURAL JOIN
-                    (SELECT MATCH_ID
-                        FROM COMPETITIONS
-                        NATURAL JOIN MATCHES
-                        WHERE COMPETITION_NAME = 'La Liga'
-                            AND SEASON_NAME = '2020/2021') AS SEASON_MATCH_IDS)
-            GROUP BY TEAM_ID
-            HAVING COUNT(*) > 0)
-    NATURAL JOIN TEAMS
-    ORDER BY PASS_COUNT DESC; """
+    query = """ 
+    WITH 
+        SEASON_MATCH_IDS AS (
+            SELECT MATCH_ID
+            FROM COMPETITIONS NATURAL JOIN MATCHES
+            WHERE COMPETITION_NAME = 'La Liga' AND SEASON_NAME = '2020/2021'
+        ),
+        
+        PASSES_MADE AS (
+            SELECT MATCH_ID, TEAM_ID
+            FROM EVENTS, PASS
+            WHERE EVENTS.EVENT_ID = PASS.EVENT_ID
+        )
+	
+    SELECT teams.TEAM_NAME, count(*) AS PASS_COUNT
+    FROM PASSES_MADE NATURAL JOIN SEASON_MATCH_IDS NATURAL JOIN TEAMS
+    GROUP BY TEAM_NAME
+    ORDER BY PASS_COUNT DESC;"""
 
     #==========================================================================
 
@@ -315,21 +316,24 @@ def Q_5(cursor, conn, execution_time):
     # Enter QUERY within the quotes:
     
     query = """
-    SELECT PLAYERS.PLAYER_NAME, COUNT (*) AS PASS_COUNT
-    FROM (
-        (SELECT MATCH_ID, RECIPIENT_ID
+    WITH
+        SEASON_MATCH_IDS AS (
+            SELECT MATCH_ID
+            FROM COMPETITIONS NATURAL JOIN MATCHES
+            WHERE COMPETITION_NAME = 'Premier League' AND SEASON_NAME = '2003/2004'
+        ),
+        
+        RECIPIENT_OF_PASSES AS (
+            SELECT MATCH_ID, RECIPIENT_ID
             FROM EVENTS, PASS
-            WHERE EVENTS.EVENT_ID = PASS.EVENT_ID) AS PASS_RECIPIENTS
-        NATURAL JOIN
-        (SELECT MATCH_ID
-            FROM COMPETITIONS
-            NATURAL JOIN MATCHES
-            WHERE COMPETITION_NAME = 'Premier League'
-                AND SEASON_NAME = '2003/2004') AS SEASON_MATCH_IDS
-        INNER JOIN PLAYERS ON RECIPIENT_ID = PLAYERS.PLAYER_ID)
-    GROUP BY PLAYERS.PLAYER_NAME
+            WHERE EVENTS.EVENT_ID = PASS.EVENT_ID
+        )
+
+    SELECT PLAYER_NAME, COUNT(*) AS PASS_RECIPIENT_COUNT
+    FROM SEASON_MATCH_IDS NATURAL JOIN RECIPIENT_OF_PASSES INNER JOIN PLAYERS ON PLAYERS.PLAYER_ID = RECIPIENT_ID
+    GROUP BY PLAYER_NAME
     HAVING COUNT(*) > 0
-    ORDER BY PASS_COUNT DESC;"""
+    ORDER BY PASS_RECIPIENT_COUNT DESC;"""
 
     #==========================================================================
 
@@ -459,23 +463,25 @@ def Q_9(cursor, conn, execution_time):
     # Enter QUERY within the quotes:
     
     query = """
-    SELECT PLAYER_NAME, SUCCESSFUL_DRIBBLE_COUNT
-    FROM
-        (SELECT PLAYER_ID, COUNT (*) AS SUCCESSFUL_DRIBBLE_COUNT
-            FROM (
-                    (SELECT MATCH_ID, PLAYER_ID
-                        FROM Events, DRIBBLE
-                        WHERE events.event_id = dribble.event_id AND DRIBBLE.OUTCOME = 'Complete') AS DRIBBLES
-                NATURAL JOIN
-                    (SELECT MATCH_ID
-                        FROM COMPETITIONS
-                        NATURAL JOIN MATCHES
-                        WHERE COMPETITION_NAME = 'La Liga'
-                            AND SEASON_NAME in ('2018/2019', '2019/2020', '2020/2021')) AS SEASON_MATCH_IDS)
-            GROUP BY PLAYER_ID
-            HAVING COUNT(*) > 0)
-    NATURAL JOIN PLAYERS
-    ORDER BY SUCCESSFUL_DRIBBLE_COUNT DESC; """
+    WITH
+        SEASON_MATCH_IDS AS (
+            SELECT MATCH_ID
+            FROM COMPETITIONS
+            NATURAL JOIN MATCHES
+            WHERE COMPETITION_NAME = 'La Liga' AND SEASON_NAME in ('2018/2019', '2019/2020', '2020/2021')
+        ),
+
+        SUCCESSFUL_DRIBBLES AS (
+            SELECT MATCH_ID, PLAYER_ID
+            FROM EVENTS, DRIBBLE
+            WHERE EVENTS.event_id = DRIBBLE.event_id AND DRIBBLE.OUTCOME = 'Complete'
+        )
+
+    SELECT PLAYER_NAME, COUNT(*) AS SUCCESSFUL_DRIBBLE_COUNT
+    FROM SEASON_MATCH_IDS NATURAL JOIN SUCCESSFUL_DRIBBLES NATURAL JOIN PLAYERS 
+    GROUP BY PLAYER_NAME
+    HAVING COUNT(*) > 0
+    ORDER BY SUCCESSFUL_DRIBBLE_COUNT DESC;"""
 
     #==========================================================================
 
