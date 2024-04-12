@@ -51,7 +51,7 @@ def generate_insert_statement(table_name, data):
 
         all_values = new_values.values()
         values = ', '.join(map(repr, all_values))
-        statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values});")
+        statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values}) " + " ON CONFLICT (match_id) DO NOTHING;")
     return statements
 
 def convert_json_to_sql(file_path):

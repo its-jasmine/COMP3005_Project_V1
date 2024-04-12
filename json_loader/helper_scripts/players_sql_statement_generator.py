@@ -41,7 +41,7 @@ def convert_json_to_sql(file_path):
     for row in json_data:
         row.pop("team_id", None)
         row.pop("team_name", None)
-        statements += (generate_insert_statement("players", row)) # Replace 'YourTableName' with your actual table name
+        statements += (generate_insert_statement("players", row)) 
     return statements
 
 # Path to the JSON file

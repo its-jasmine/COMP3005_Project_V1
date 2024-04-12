@@ -22,7 +22,7 @@ def generate_insert_statement(table_name, data):
         columns = ', '.join(new_values.keys()) 
         all_values = new_values.values()
         values = ', '.join(map(repr, all_values))
-        statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values});")
+        statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})" + " ON CONFLICT (team_id) DO NOTHING;")
 
     if data.get("away_team"):
         new_values['team_id'] = data['away_team']['away_team_id']
@@ -34,7 +34,7 @@ def generate_insert_statement(table_name, data):
         columns = ', '.join(new_values.keys()) 
         all_values = new_values.values()
         values = ', '.join(map(repr, all_values))
-        statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values});")
+        statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})" + " ON CONFLICT (team_id) DO NOTHING;")
     
     return statements
 
