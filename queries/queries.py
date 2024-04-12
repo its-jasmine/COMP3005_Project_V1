@@ -29,10 +29,10 @@ The following is the connection information for this project. These settings are
 You must NOT change these settings - by default, db_host, db_port and db_username are as follows when first installing and utilizing psql.
 For the user "postgres", you must MANUALLY set the password to 1234.
 '''
-root_database_name = "test"
-query_database_name = "test"
+root_database_name = "ProjectV001"
+query_database_name = "ProjectV001"
 db_username = 'postgres'
-db_password = 'postgres'
+db_password = 'Password1!'
 db_host = 'localhost'
 db_port = '5432'
 
@@ -168,7 +168,26 @@ def Q_1(cursor, conn, execution_time):
     #==========================================================================
     # Enter QUERY within the quotes:
 
-    query = """ """
+    query = """
+    WITH 
+        SEASON_MATCH_IDS AS (
+            SELECT MATCH_ID
+            FROM COMPETITIONS NATURAL JOIN MATCHES
+            WHERE COMPETITION_NAME = 'La Liga' AND SEASON_NAME = '2018/2019'),
+            
+        PLAYERS_XG_SCORES_IN_SEASON AS (
+            SELECT PLAYER_ID, STATSBOMB_XG
+            FROM (SHOT JOIN EVENTS ON SHOT.EVENT_ID = EVENTS.EVENT_ID) NATURAL JOIN SEASON_MATCH_IDS
+            WHERE STATSBOMB_XG > 0),
+    
+        PLAYERS_AVG_XG_SCORES AS (
+            SELECT PLAYER_ID, AVG(STATSBOMB_XG) AS AVG_XG_SCORE
+            FROM PLAYERS_XG_SCORES_IN_SEASON
+            GROUP BY PLAYER_ID)
+    SELECT PLAYER_NAME, AVG_XG_SCORE
+    FROM PLAYERS_AVG_XG_SCORES NATURAL JOIN PLAYERS
+    ORDER BY AVG_XG_SCORE DESC;
+    """
 
     #==========================================================================
 
@@ -260,7 +279,24 @@ def Q_4(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    SELECT TEAM_NAME, PASS_COUNT
+    FROM
+        (SELECT TEAM_ID, COUNT (*) AS PASS_COUNT
+            FROM (
+                    (SELECT MATCH_ID, TEAM_ID
+                        FROM EVENTS
+                        WHERE EVENTS.TYPE = 'Pass') AS TEAM_PASSES
+                NATURAL JOIN
+                    (SELECT MATCH_ID
+                        FROM COMPETITIONS
+                        NATURAL JOIN MATCHES
+                        WHERE COMPETITION_NAME = 'La Liga'
+                            AND SEASON_NAME = '2020/2021') AS SEASON_MATCH_IDS)
+            GROUP BY TEAM_ID
+            HAVING COUNT(*) > 0)
+    NATURAL JOIN TEAMS
+    ORDER BY PASS_COUNT DESC; """
 
     #==========================================================================
 
@@ -278,7 +314,22 @@ def Q_5(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    SELECT PLAYERS.PLAYER_NAME, COUNT (*) AS PASS_COUNT
+    FROM (
+        (SELECT MATCH_ID, RECIPIENT_ID
+            FROM EVENTS, PASS
+            WHERE EVENTS.EVENT_ID = PASS.EVENT_ID) AS PASS_RECIPIENTS
+        NATURAL JOIN
+        (SELECT MATCH_ID
+            FROM COMPETITIONS
+            NATURAL JOIN MATCHES
+            WHERE COMPETITION_NAME = 'Premier League'
+                AND SEASON_NAME = '2003/2004') AS SEASON_MATCH_IDS
+        INNER JOIN PLAYERS ON RECIPIENT_ID = PLAYERS.PLAYER_ID)
+    GROUP BY PLAYERS.PLAYER_NAME
+    HAVING COUNT(*) > 0
+    ORDER BY PASS_COUNT DESC;"""
 
     #==========================================================================
 
@@ -332,7 +383,27 @@ def Q_7(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    WITH 
+        SEASON_MATCH_IDS AS (
+            SELECT MATCH_ID
+            FROM COMPETITIONS NATURAL JOIN MATCHES
+            WHERE COMPETITION_NAME = 'La Liga' AND SEASON_NAME = '2020/2021'),
+            
+        THROUGH_BALLS AS (
+            SELECT EVENT_ID
+            FROM PASS
+            WHERE THROUGH_BALL = TRUE),
+        
+        THROUGH_BALLS_IN_SEASON AS (
+            SELECT PLAYER_ID, COUNT(*) AS NUM_THROUGH_BALLS
+            FROM ((THROUGH_BALLS NATURAL JOIN EVENTS) NATURAL JOIN SEASON_MATCH_IDS)
+            GROUP BY PLAYER_ID)
+
+    SELECT PLAYER_NAME, NUM_THROUGH_BALLS
+    FROM THROUGH_BALLS_IN_SEASON NATURAL JOIN PLAYERS
+    ORDER BY NUM_THROUGH_BALLS DESC;
+    """
 
     #==========================================================================
 
@@ -387,7 +458,24 @@ def Q_9(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    SELECT PLAYER_NAME, SUCCESSFUL_DRIBBLE_COUNT
+    FROM
+        (SELECT PLAYER_ID, COUNT (*) AS SUCCESSFUL_DRIBBLE_COUNT
+            FROM (
+                    (SELECT MATCH_ID, PLAYER_ID
+                        FROM Events, DRIBBLE
+                        WHERE events.event_id = dribble.event_id AND DRIBBLE.OUTCOME = 'Complete') AS DRIBBLES
+                NATURAL JOIN
+                    (SELECT MATCH_ID
+                        FROM COMPETITIONS
+                        NATURAL JOIN MATCHES
+                        WHERE COMPETITION_NAME = 'La Liga'
+                            AND SEASON_NAME in ('2018/2019', '2019/2020', '2020/2021')) AS SEASON_MATCH_IDS)
+            GROUP BY PLAYER_ID
+            HAVING COUNT(*) > 0)
+    NATURAL JOIN PLAYERS
+    ORDER BY SUCCESSFUL_DRIBBLE_COUNT DESC; """
 
     #==========================================================================
 
@@ -405,7 +493,26 @@ def Q_10(cursor, conn, execution_time):
     #==========================================================================    
     # Enter QUERY within the quotes:
     
-    query = """ """
+    query = """
+    WITH 
+        SEASON_MATCH_IDS AS (
+            SELECT MATCH_ID
+            FROM COMPETITIONS NATURAL JOIN MATCHES
+            WHERE COMPETITION_NAME = 'La Liga' AND SEASON_NAME = '2020/2021'),
+            
+        DRIBBLE_PAST_IN_SEASON AS (
+            SELECT PLAYER_ID
+            FROM (DRIBBLE_PAST NATURAL JOIN EVENTS) NATURAL JOIN SEASON_MATCH_IDS),
+        
+        PLAYERS_NUM_DRIBBLES_PAST AS (
+            SELECT PLAYER_ID, COUNT(*) AS NUM_DRIBBLE_PAST
+            FROM DRIBBLE_PAST_IN_SEASON
+            GROUP BY PLAYER_ID)
+
+    SELECT PLAYER_NAME, NUM_DRIBBLE_PAST
+    FROM PLAYERS_NUM_DRIBBLES_PAST NATURAL JOIN PLAYERS
+    ORDER BY NUM_DRIBBLE_PAST ASC;
+    """
 
     #==========================================================================
 

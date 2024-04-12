@@ -40,7 +40,7 @@ def generate_create_statement_position():
 def generate_create_statement_pass():
     return "CREATE TABLE IF NOT EXISTS pass \n" \
            "(event_id           VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-           "recepient_id        INTEGER,  \n" \
+           "recipient_id        INTEGER,  \n" \
            "length              FLOAT,  \n" \
            "angle               FLOAT, \n" \
            "height              VARCHAR(255), \n" \
@@ -178,7 +178,9 @@ def generate_create_statement_shot():
             "body_part         VARCHAR(255),  \n" \
             "type              VARCHAR(255),  \n" \
             "outcome           VARCHAR(255),  \n" \
-            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
+            "FOREIGN KEY (event_id) REFERENCES events(event_id),  \n" \
+            "FOREIGN KEY (key_pass_id) REFERENCES players(player_id));"
+
 
 def generate_create_statement_injury_stoppage():
     return "CREATE TABLE IF NOT EXISTS injury_stoppage \n" \
