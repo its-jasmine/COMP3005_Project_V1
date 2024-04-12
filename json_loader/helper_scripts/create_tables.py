@@ -179,7 +179,7 @@ def generate_create_statement_shot():
             "type              VARCHAR(255),  \n" \
             "outcome           VARCHAR(255),  \n" \
             "FOREIGN KEY (event_id) REFERENCES events(event_id),  \n" \
-            "FOREIGN KEY (key_pass_id) REFERENCES players(player_id));"
+            "FOREIGN KEY (key_pass_id) REFERENCES pass(event_id));"
 
 
 def generate_create_statement_injury_stoppage():
@@ -263,12 +263,6 @@ def generate_create_statement_bad_behaviour():
            "(event_id        VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
            "card             VARCHAR(255) NOT NULL,  \n" \
            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
-
-def generate_create_statement_player_off(): # TODO confirm whether including?
-    return ""
-
-def generate_create_statement_half_end(): # TODO confirm whether including?
-    return ""
 
 def generate_create_statement_carry():
     return "CREATE TABLE IF NOT EXISTS carry \n" \
@@ -366,6 +360,7 @@ create_statements.append(generate_create_statement_goal_keeper())
 create_statements.append(generate_create_statement_half_start())
 create_statements.append(generate_create_statement_miscontrol())
 create_statements.append(generate_create_statement_pressure())
+create_statements.append(generate_create_statement_pass())
 create_statements.append(generate_create_statement_shot())
 create_statements.append(generate_create_statement_50_50())
 create_statements.append(generate_create_statement_bad_behaviour())
@@ -380,8 +375,6 @@ create_statements.append(generate_create_statement_interception())
 create_statements.append(generate_create_statement_carry())
 create_statements.append(generate_create_statement_foul_won())
 create_statements.append(generate_create_statement_dribble())
-create_statements.append(generate_create_statement_player_off())
-create_statements.append(generate_create_statement_pass())
 with open("../insert_statements/ddl.sql", "a", encoding='utf-8') as file:
     for statement in create_statements:
         file.write(statement + "\n")

@@ -3,9 +3,6 @@ import json
 import os
 
 
-columns_names = ['goalkeeper', 'right_back', 'right_center_back', 'left_center_back', 'left_back', 'right_defensive_midfield', 'left_defensive_midfield', 'right_midfield', 'left_midfield', 'right_center_forward', 'left_center_forward']
-
-
 def insert_statements_position(data, match_id):
     columns_names = ["match_id", "team_id", "player_id", "position_id", "position_name", "from_time", "to_time", "from_period", "to_period", "start_reason", "end_reason"]
     statements = []
@@ -22,7 +19,7 @@ def insert_statements_position(data, match_id):
                 values += [position[key] for key in position]
                 columns_str = ', '.join(columns_names) 
                 values_str = ', '.join(map(repr, values))
-                statement = f"INSERT INTO position ({columns_str}) VALUES ({values_str})"  + " ON CONFLICT (match_id, team_id) DO NOTHING;"
+                statement = f"INSERT INTO positions ({columns_str}) VALUES ({values_str})"  + " ON CONFLICT (match_id, team_id) DO NOTHING;"
                 statement = statement.replace("None", "NULL")
                 statements.append(statement)
                 values = values[:-8]
@@ -51,7 +48,7 @@ def convert_json_to_sql_events(file_path):
         statements_lineup = []
         statements_positions = []
     for data in json_data:
-        statements_lineup += (insert_statements_lineup(data, os.path.splitext(file_path)[0])) # Replace 'YourTableName' with your actual table name
+        statements_lineup += (insert_statements_lineup(data, os.path.splitext(file_path)[0])) 
         statements_positions += (insert_statements_position(data, os.path.splitext(file_path)[0]))
     return statements_lineup, statements_positions
 

@@ -29,59 +29,59 @@ lineup_id = 0
 
 def generate_insert_statement_events(table_name, data, match_id):
     statements = []
-    values = []
-    values.append(data["id"])
-    values.append(match_id)
-    values.append(data["index"])
-    values.append(data["period"])
-    values.append(data["timestamp"])
-    values.append(data["minute"])
-    values.append(data["second"])
-    values.append(data["type"]["name"])
-    values.append(data["possession"])
-    values.append(data["possession_team"]["id"]) 
-    values.append(data["play_pattern"]["name"])
-    values.append(data["team"]["id"]) 
-    try:
-        values.append(data["duration"])
-    except KeyError:
-        values.append(None)
+    # values = []
+    # values.append(data["id"])
+    # values.append(match_id)
+    # values.append(data["index"])
+    # values.append(data["period"])
+    # values.append(data["timestamp"])
+    # values.append(data["minute"])
+    # values.append(data["second"])
+    # values.append(data["type"]["name"])
+    # values.append(data["possession"])
+    # values.append(data["possession_team"]["id"]) 
+    # values.append(data["play_pattern"]["name"])
+    # values.append(data["team"]["id"]) 
+    # try:
+    #     values.append(data["duration"])
+    # except KeyError:
+    #     values.append(None)
 
-    try:
-        values.append(data["location"][0])
-    except KeyError:
-        values.append(None)
+    # try:
+    #     values.append(data["location"][0])
+    # except KeyError:
+    #     values.append(None)
     
-    try:
-        values.append(data["location"][1])
-    except KeyError:
-        values.append(None)
+    # try:
+    #     values.append(data["location"][1])
+    # except KeyError:
+    #     values.append(None)
 
-    try:
-        values.append(data["under_pressure"])
-    except KeyError:
-        values.append(None)
+    # try:
+    #     values.append(data["under_pressure"])
+    # except KeyError:
+    #     values.append(None)
 
-    try:
-        values.append(data["off_camera"])
-    except KeyError:
-        values.append(None)
+    # try:
+    #     values.append(data["off_camera"])
+    # except KeyError:
+    #     values.append(None)
 
-    try:
-        values.append(data["out"])
-    except KeyError:
-        values.append(None)
+    # try:
+    #     values.append(data["out"])
+    # except KeyError:
+    #     values.append(None)
 
-    try:
-        values.append(data["player"]["id"])
-    except KeyError:
-        values.append(None)
+    # try:
+    #     values.append(data["player"]["id"])
+    # except KeyError:
+    #     values.append(None)
 
-    columns = ', '.join(columns_names) 
-    values = ', '.join(map(repr, values))
-    statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;")
+    # columns = ', '.join(columns_names) 
+    # values = ', '.join(map(repr, values))
+    # statements.append(f"INSERT INTO {table_name} ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;")
 
-    data_keys = data.keys()
+    # data_keys = data.keys()
     # if "ball_recovery" in data_keys:
     #     generate_insert_statement_ball_recovery(data["ball_recovery"], data["id"])
 
@@ -112,7 +112,7 @@ def generate_insert_statement_events(table_name, data, match_id):
     # if "pass" in data_keys:
     #     generate_insert_statement_pass(data["pass"], data["id"])
     
-    # Not including Player Off and Half End tables as none of their attributes have values
+    # # Not including Player Off and Half End tables as none of their attributes have values
         
     # if "carry" in data_keys:
     #     generate_insert_statement_carry(data["carry"], data["id"])
@@ -126,25 +126,25 @@ def generate_insert_statement_events(table_name, data, match_id):
     #     except KeyError:
     #         generate_insert_statement_substitution(data["stta"], data["id"])
 
-    if data["type"]["name"] == "Starting XI":
-        generate_insert_statement_starting_xi(data["tactics"], data["id"])
+    # if data["type"]["name"] == "Starting XI":
+    #     generate_insert_statement_starting_xi(data["tactics"], data["id"])
 
-    if data["type"]["name"] == "Tactical Shift":
-        generate_insert_statement_tactical_shift(data["tactics"], data["id"])
+    # if data["type"]["name"] == "Tactical Shift":
+    #     generate_insert_statement_tactical_shift(data["tactics"], data["id"])
 
-    # id = data["id"]
+    id = data["id"]
     # if data.get('type')['name'] == "Clearance":
     #     generate_insert_statement_clearance(data.get("clearance"), id)
     # elif data.get('type')['name'] == "Goal Keeper":
-    #     generate_insert_statement_goal_keeper(data.get("goalkeeper"), id)
-    # elif data.get('type')['name'] == "Foul Committed":
+        # generate_insert_statement_goal_keeper(data.get("goalkeeper"), id)
+    # if data.get('type')['name'] == "Foul Committed":
     #     generate_insert_statement_foul_committed(data.get("foul_committed"), id)
-    # elif data.get('type')['name'] == "Miscontrol":
+    # if data.get('type')['name'] == "Miscontrol":
     #     generate_insert_statement_miscontrol(data.get("miscontrol"), id)
     # elif data.get('type')['name'] == "Dribbled Past":
     #     generate_insert_statement_dribble_past(data.get("counterpress"), id)
-    # elif data.get('type')['name'] == "Pressure":
-    #     generate_insert_statement_pressure(data.get("counterpress"), id)
+    if data.get('type')['name'] == "Pressure":
+        generate_insert_statement_pressure(data.get("counterpress"), id)
     # elif data.get('type')['name'] == "Half Start":
     #     generate_insert_statement_half_start(data.get("half_start"), id)
     # elif data.get('type')['name'] == "Duel":
@@ -273,21 +273,11 @@ def generate_insert_statement_substitution(data, event_id):
         file.write(statement + "\n")
 
 def generate_insert_statement_starting_xi(data, event_id):
-    #statement for lineup
     global lineup_id
     lineup_values = []
     for player in data["lineup"]:
         lineup_values.append(player["player"]["id"])
 
-    columns = ', '.join(columns_names_lineup) 
-    values = ', '.join(map(repr, lineup_values))
-    statement = f"INSERT INTO lineups ({columns}) VALUES ({values})"  + " ON CONFLICT (lineup_id) DO NOTHING;"
-    statement = statement.replace("None", "NULL")
-    with open("../insert_statements/lineup.sql", "a", encoding='utf-8') as file:
-        file.write(statement + "\n")
-
-
-    #statement for starting xi
     columns_names = ["event_id", "formation"]
     values = []
     values.append(event_id)
@@ -296,25 +286,15 @@ def generate_insert_statement_starting_xi(data, event_id):
     values = ', '.join(map(repr, (values + lineup_values)))
     statement = f"INSERT INTO starting_xi ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
     statement = statement.replace("None", "NULL")
-    print(statement, "\n")
     with open("../insert_statements/starting_xi.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
     lineup_id += 1
 
 def generate_insert_statement_tactical_shift(data, event_id):
-    #statement for lineup
     global lineup_id
     lineup_values = []
     for player in data["lineup"]:
         lineup_values.append(player["player"]["id"])
-
-    columns = ', '.join(columns_names_lineup) 
-    values = ', '.join(map(repr, lineup_values))
-    statement = f"INSERT INTO lineups ({columns}) VALUES ({values})"  + " ON CONFLICT (lineup_id) DO NOTHING;"
-    statement = statement.replace("None", "NULL")
-    with open("../insert_statements/lineup.sql", "a", encoding='utf-8') as file:
-        file.write(statement + "\n")
-
 
     columns_names = ["event_id", "formation"]
     values = []
@@ -344,7 +324,6 @@ def generate_insert_statement_50_50(data, event_id):
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO fifty_fifty ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;" # table name can't start with numbers, writing as words
     statement = statement.replace("None", "NULL")
-    print(statement)
     with open("../insert_statements/fifty_fifty.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
@@ -367,10 +346,8 @@ def generate_insert_statement_block(data, event_id):
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO block ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
     statement = statement.replace("None", "NULL")
-    print(statement)
     with open("../insert_statements/block.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
-
 
 def generate_insert_statement_interception(data, event_id):
     columns_names = ["event_id", "outcome"]
@@ -381,7 +358,6 @@ def generate_insert_statement_interception(data, event_id):
     columns = ', '.join(columns_names)
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO interception ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
-    print(statement)
     with open("../insert_statements/interception.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
@@ -394,45 +370,7 @@ def generate_insert_statement_bad_behaviour(data, event_id):
     columns = ', '.join(columns_names)
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO bad_behaviour ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
-    print(statement)
     with open("../insert_statements/bad_behaviour.sql", "a", encoding='utf-8') as file:
-        file.write(statement + "\n")
-
-def generate_insert_statement_player_off(data, event_id): # TODO maybe remove? additional attribute is not found on event level, and theres never a key with additional attributes
-    columns_names = ["event_id", "permanent"]
-    values = []
-    values.append(event_id)
-
-    try:
-        values.append(data["permanent"])
-    except KeyError:
-        values.append(None)
-
-    columns = ', '.join(columns_names)
-    values = ', '.join(map(repr, values))
-    statement = f"INSERT INTO player_off ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
-    statement = statement.replace("None", "NULL")
-    print(statement)
-    with open("../insert_statements/player_off.sql", "a", encoding='utf-8') as file:
-        file.write(statement + "\n")
-
-def generate_insert_statement_half_end(data, event_id): # TODO maybe remove? additional attribute is not found on event level, and theres never a key with additional attributes
-    columns_names = ["event_id", "early_video_end", "match_suspended"]
-    values = []
-    values.append(event_id)
-
-    for name in columns_names[1:]:
-        try:
-            values.append(data["half_end"][name])
-        except KeyError:
-            values.append(None)
-
-    columns = ', '.join(columns_names)
-    values = ', '.join(map(repr, values))
-    statement = f"INSERT INTO half_end ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
-    statement = statement.replace("None", "NULL")
-    print(statement)
-    with open("../insert_statements/half_end.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
 def generate_insert_statement_carry(data, event_id):
@@ -445,10 +383,8 @@ def generate_insert_statement_carry(data, event_id):
     columns = ', '.join(columns_names)
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO carry ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
-    print(statement)
     with open("../insert_statements/carry.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
-
 
 def generate_insert_statement_foul_won(data, event_id):
     columns_names = ["event_id", "defensive", "advantage", "penalty"]
@@ -461,7 +397,7 @@ def generate_insert_statement_foul_won(data, event_id):
                 values.append(data[name])
             except KeyError:
                 values.append(None)
-    except KeyError: # TODO maybe make booleans FALSE instead of NULL when they are not there, consider for other boools too
+    except KeyError:
         values.append(None) # defensive
         values.append(None) # advantage
         values.append(None) # penalty
@@ -470,7 +406,6 @@ def generate_insert_statement_foul_won(data, event_id):
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO foul_won ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
     statement = statement.replace("None", "NULL")
-    print(statement)
     with open("../insert_statements/foul_won.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
@@ -484,7 +419,7 @@ def generate_insert_statement_clearance(data, id):
             if i == "aerial_won":
                 new_values[i] = data[i]
             else:
-                new_values[i] = data[i]
+                new_values[i] = data[i]["name"]
         except:
             new_values[i] = None
 
@@ -534,18 +469,18 @@ def generate_insert_statement_foul_committed(data, id):
 
     columns = ', '.join(new_values.keys()) 
     values = ', '.join(map(repr, new_values.values()))
-    statement = f"INSERT INTO comitted ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
+    statement = f"INSERT INTO foul_committed ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
     statement = statement.replace('None', 'NULL')
-    with open("../insert_statements/foul_comimitted.sql", "a", encoding='utf-8') as file:
+    with open("../insert_statements/foul_committed.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
 def generate_insert_statement_miscontrol(data, id):
     new_values = {}
     new_values["event_id"] = id
     try:
-        new_values["counterpress"] = data["aerial_won"]
+        new_values["aerial_won"] = data["aerial_won"]
     except: 
-        new_values["counterpress"] = None
+        new_values["aerial_won"] = None
     columns = ', '.join(new_values.keys()) 
     values = ', '.join(map(repr, new_values.values()))
     statement = f"INSERT INTO miscontrol ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
@@ -578,7 +513,7 @@ def generate_insert_statement_pressure(data, id):
     values = ', '.join(map(repr, new_values.values()))
     statement = f"INSERT INTO pressure ({columns}) VALUES ({values}) ON CONFLICT (event_id) DO NOTHING;"
     statement = statement.replace('None', 'NULL')
-    with open("../insert_statements/statement_pressure.sql", "a", encoding='utf-8') as file:
+    with open("../insert_statements/pressure.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
 def generate_insert_statement_half_start(data, id):
@@ -659,58 +594,17 @@ def generate_insert_statement_pass(data, event_id):
     values = ', '.join(map(repr, values))
     statement = f"INSERT INTO pass ({columns}) VALUES ({values})" + " ON CONFLICT (event_id) DO NOTHING;"
     statement = statement.replace('None', 'NULL')
-    print(statement)
     with open("../insert_statements/pass.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
 def convert_json_to_sql_events(file_path, player):
     with open(f"../statsbomb_data/events/{file_path}", 'r', encoding='utf-8') as file:
         json_data = json.load(file)
-    
-    # for data in json_data:
-    #     if "dribble" in data.keys():
-    #         for key in data["dribble"].keys():
-    #             if not key == "outcome":
-    #                 print(key, data["dribble"][key], end=' ')
-    #                 print()
-
-    # for data in json_data:
-        # if "shot" in data.keys():
-        #     if "first_time" in data["shot"].keys():
-        #         if not data["player"]["name"] in player.keys():
-        #             player[data["player"]["name"]] = 1
-        #         else:
-        #             player[data["player"]["name"]] += 1
-
-        # if "shot" in data.keys():
-        #     if not data["team"]["name"] in player.keys():
-        #         player[data["team"]["name"]] = 1
-        #     else:
-        #         player[data["team"]["name"]] += 1
-
-        # if "tactics" in data.keys():
-        #     try:
-        #         if (data["tactics"]["lineup"]):
-        #             player["events " + str(file_path)] = 1
-        #         else:
-        #             player["events " + str(file_path)] += 1
-        #     except KeyError:
-        #         continue
-
-    # with open(f"../statsbomb_data/lineups/{file_path}", 'r', encoding='utf-8') as file:
-    #     json_data = json.load(file)
-    #     # print(json_data[0])
-    #     for data in json_data:
-    #         # print(len(data["lineup"]))
-    #         for i in range(len(data["lineup"])):
-    #             print (data["lineup"][i]["player_name"], len(data["lineup"][i]["positions"]))
 
     statements = []
     for data in json_data:
-        statements += (generate_insert_statement_events("events", data, os.path.splitext(file_path)[0])) # Replace 'YourTableName' with your actual table name
-    
+        statements += (generate_insert_statement_events("events", data, os.path.splitext(file_path)[0])) 
     return statements
-
 
 sql_statements = []
 directory = "../statsbomb_data/lineups/"
@@ -722,43 +616,28 @@ with open(f"../statsbomb_data/matches/11/90.json", 'r', encoding='utf-8') as fil
     for data in json_data:
         matches.append(data["match_id"])
 
-
 player = {}
 for file in files:
     sql_statements += convert_json_to_sql_events(file, player)
 
-# for match in matches:
-#     sql_statements += convert_json_to_sql_events(match, player)
-#     break
-
-
-# sorted_items = sorted(player.items(), key=lambda x: x[1], reverse=True)
-# sorted_dict = dict(sorted_items)
-# for play in player:
-#     print(play, player[play])
-
-#sql_statements += convert_json_to_sql_events("303473.json") #just to test
-print(len(sql_statements))
 sql_statements = list(set(sql_statements)) # deduplicate
-print(len(sql_statements))
 
-# fourth = round(len(sql_statements) / 4)
-# for statement in sql_statements[:fourth]:
-#     with open("../insert_statements/events1.sql", "a", encoding='utf-8') as file:
-#         statement = statement.replace("None", "NULL")
-#         file.write(statement + "\n")
-# for statement in sql_statements[fourth:fourth*2]:
-#     with open("../insert_statements/events2.sql", "a", encoding='utf-8') as file:
-#         statement = statement.replace("None", "NULL")
-#         file.write(statement + "\n")
-# for statement in sql_statements[fourth*2:fourth*3]:
-#     with open("../insert_statements/events3.sql", "a", encoding='utf-8') as file:
-#         statement = statement.replace("None", "NULL")
-#         file.write(statement + "\n")
-# for statement in sql_statements[fourth*3:]:
-#     with open("../insert_statements/events4.sql", "a", encoding='utf-8') as file:
-#         statement = statement.replace("None", "NULL")
-#         file.write(statement + "\n")
-    
+fourth = round(len(sql_statements) / 4)
+for statement in sql_statements[:fourth]:
+    with open("../insert_statements/events1.sql", "a", encoding='utf-8') as file:
+        statement = statement.replace("None", "NULL")
+        file.write(statement + "\n")
+for statement in sql_statements[fourth:fourth*2]:
+    with open("../insert_statements/events2.sql", "a", encoding='utf-8') as file:
+        statement = statement.replace("None", "NULL")
+        file.write(statement + "\n")
+for statement in sql_statements[fourth*2:fourth*3]:
+    with open("../insert_statements/events3.sql", "a", encoding='utf-8') as file:
+        statement = statement.replace("None", "NULL")
+        file.write(statement + "\n")
+for statement in sql_statements[fourth*3:]:
+    with open("../insert_statements/events4.sql", "a", encoding='utf-8') as file:
+        statement = statement.replace("None", "NULL")
+        file.write(statement + "\n")
 
 

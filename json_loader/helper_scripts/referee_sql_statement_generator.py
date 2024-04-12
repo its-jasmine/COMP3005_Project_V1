@@ -42,9 +42,6 @@ sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/11/90.json")
 
 sql_statements = set(sql_statements)
 
-for statement in sql_statements:
-    print(statement)
-
 with open("../insert_statements/referees.sql", "a", encoding='utf-8') as file:
     for statement in sql_statements:
         statement = statement.replace("None", "NULL")

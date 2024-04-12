@@ -46,7 +46,6 @@ for statement in sql_statements:
     # "St. Mary''s Stadium" and "St. James'' Park" are causing issues w sql... workaround:
     statement = statement.replace("''", "")
     statement = statement.replace('"', "'")
-    print(statement)
 
 
 with open("../insert_statements/stadiums.sql", "a", encoding='utf-8') as file:
