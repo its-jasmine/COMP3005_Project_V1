@@ -10,18 +10,32 @@ def generate_create_statement_competitions():
 
 def generate_create_statement_lineups():
     return "CREATE TABLE IF NOT EXISTS lineups \n" \
-            "(lineup_id                 INTEGER NOT NULL PRIMARY KEY, \n" \
-            "goalkeeper                 INTEGER NOT NULL,  \n" \
-            "right_back                 INTEGER NOT NULL,  \n" \
-            "right_center_back          INTEGER NOT NULL, \n" \
-            "left_center_back           INTEGER NOT NULL, \n" \
-            "left_back                  INTEGER NOT NULL, \n" \
-            "right_defensive_midfield   INTEGER NOT NULL, \n" \
-            "left_defensive_midfield    INTEGER NOT NULL, \n" \
-            "right_midfield             INTEGER NOT NULL, \n" \
-            "left_midfield              INTEGER NOT NULL, \n" \
-            "right_center_forward       INTEGER NOT NULL, \n" \
-            "left_center_forward        INTEGER NOT NULL);"
+            "(match_id                 INTEGER NOT NULL, \n" \
+            "team_id                   INTEGER NOT NULL,  \n" \
+            "player_id                 INTEGER NOT NULL,  \n" \
+            "PRIMARY KEY (match_id, team_id),  \n" \
+            "FOREIGN KEY (match_id) REFERENCES matches(match_id),  \n" \
+            "FOREIGN KEY (team_od) REFERENCES teams(team_id),  \n" \
+            "FOREIGN KEY (player_id) REFERENCES players(player_id) );"
+
+
+def generate_create_statement_position():
+    return "CREATE TABLE IF NOT EXISTS positions \n" \
+            "(match_id                 INTEGER NOT NULL, \n" \
+            "team_id                   INTEGER NOT NULL,  \n" \
+            "player_id                 INTEGER NOT NULL,  \n" \
+            "position_id               INTEGER NOT NULL, \n" \
+            "position_name             VARCHAR(255) NOT NULL,  \n" \
+            "from_time                 VARCHAR(255),  \n" \
+            "to_time                   VARCHAR(255),  \n" \
+            "from_period               INTEGER,  \n" \
+            "to_period                 INTEGER,  \n" \
+            "start_reason              VARCHAR(255) NOT NULL,  \n" \
+            "end_reason                VARCHAR(255) NOT NULL,  \n" \
+            "PRIMARY KEY (match_id, team_id), \n" \
+            "FOREIGN KEY (match_id) REFERENCES matches(match_id),  \n" \
+            "FOREIGN KEY (team_od) REFERENCES teams(team_id),  \n" \
+            "FOREIGN KEY (player_id) REFERENCES players(player_id) );"
 
 def generate_create_statement_pass():
     return "CREATE TABLE IF NOT EXISTS pass \n" \
@@ -314,7 +328,6 @@ def generate_create_statement_duel():
            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
 
 create_statements = []
-create_statements.append(generate_create_statement_lineups())
 create_statements.append(generate_create_statement_teams())
 create_statements.append(generate_create_statement_competitions())
 create_statements.append(generate_create_statement_stadiums())
@@ -322,6 +335,8 @@ create_statements.append(generate_create_statement_managers())
 create_statements.append(generate_create_statement_referees())
 create_statements.append(generate_create_statement_matches())
 create_statements.append(generate_create_statement_players())
+create_statements.append(generate_create_statement_lineups())
+create_statements.append(generate_create_statement_position())
 create_statements.append(generate_create_statement_events())
 create_statements.append(generate_create_statement_clearance())
 create_statements.append(generate_create_statement_dribble_past())

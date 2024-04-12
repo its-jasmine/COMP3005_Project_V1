@@ -23,7 +23,7 @@ columns_names = keys = [
     "out",
     "player_id"
 ]
-columns_names_lineup = ['lineup_id', 'goalkeeper', 'right_back', 'right_center_back', 'left_center_back', 'left_back', 'right_defensive_midfield', 'left_defensive_midfield', 'right_midfield', 'left_midfield', 'right_center_forward', 'left_center_forward']
+columns_names_lineup = ['goalkeeper', 'right_back', 'right_center_back', 'left_center_back', 'left_back', 'right_defensive_midfield', 'left_defensive_midfield', 'right_midfield', 'left_midfield', 'right_center_forward', 'left_center_forward']
 
 lineup_id = 0
 
@@ -276,7 +276,6 @@ def generate_insert_statement_starting_xi(data, event_id):
     #statement for lineup
     global lineup_id
     lineup_values = []
-    lineup_values.append(lineup_id)
     for player in data["lineup"]:
         lineup_values.append(player["player"]["id"])
 
@@ -289,26 +288,23 @@ def generate_insert_statement_starting_xi(data, event_id):
 
 
     #statement for starting xi
-    columns_names = ["event_id", "formation", "lineup_id"]
+    columns_names = ["event_id", "formation"]
     values = []
     values.append(event_id)
     values.append(data["formation"])
-    values.append(lineup_id)
-    columns = ', '.join(columns_names) 
-    values = ', '.join(map(repr, values))
+    columns = ', '.join(columns_names + columns_names_lineup) 
+    values = ', '.join(map(repr, (values + lineup_values)))
     statement = f"INSERT INTO starting_xi ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
     statement = statement.replace("None", "NULL")
+    print(statement, "\n")
     with open("../insert_statements/starting_xi.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
     lineup_id += 1
-    
-    
 
 def generate_insert_statement_tactical_shift(data, event_id):
     #statement for lineup
     global lineup_id
     lineup_values = []
-    lineup_values.append(lineup_id)
     for player in data["lineup"]:
         lineup_values.append(player["player"]["id"])
 
@@ -320,13 +316,12 @@ def generate_insert_statement_tactical_shift(data, event_id):
         file.write(statement + "\n")
 
 
-    columns_names = ["event_id", "formation", "lineup_id"]
+    columns_names = ["event_id", "formation"]
     values = []
     values.append(event_id)
     values.append(data["formation"])
-    values.append(lineup_id)
-    columns = ', '.join(columns_names) 
-    values = ', '.join(map(repr, values))
+    columns = ', '.join(columns_names + columns_names_lineup) 
+    values = ', '.join(map(repr, (values + lineup_values)))
     statement = f"INSERT INTO tactical_shift ({columns}) VALUES ({values})"  + " ON CONFLICT (event_id) DO NOTHING;"
     statement = statement.replace("None", "NULL")
     with open("../insert_statements/tactical_shift.sql", "a", encoding='utf-8') as file:
@@ -668,7 +663,7 @@ def generate_insert_statement_pass(data, event_id):
     with open("../insert_statements/pass.sql", "a", encoding='utf-8') as file:
         file.write(statement + "\n")
 
-def convert_json_to_sql_events(file_path):
+def convert_json_to_sql_events(file_path, player):
     with open(f"../statsbomb_data/events/{file_path}", 'r', encoding='utf-8') as file:
         json_data = json.load(file)
     
@@ -679,6 +674,37 @@ def convert_json_to_sql_events(file_path):
     #                 print(key, data["dribble"][key], end=' ')
     #                 print()
 
+    # for data in json_data:
+        # if "shot" in data.keys():
+        #     if "first_time" in data["shot"].keys():
+        #         if not data["player"]["name"] in player.keys():
+        #             player[data["player"]["name"]] = 1
+        #         else:
+        #             player[data["player"]["name"]] += 1
+
+        # if "shot" in data.keys():
+        #     if not data["team"]["name"] in player.keys():
+        #         player[data["team"]["name"]] = 1
+        #     else:
+        #         player[data["team"]["name"]] += 1
+
+        # if "tactics" in data.keys():
+        #     try:
+        #         if (data["tactics"]["lineup"]):
+        #             player["events " + str(file_path)] = 1
+        #         else:
+        #             player["events " + str(file_path)] += 1
+        #     except KeyError:
+        #         continue
+
+    # with open(f"../statsbomb_data/lineups/{file_path}", 'r', encoding='utf-8') as file:
+    #     json_data = json.load(file)
+    #     # print(json_data[0])
+    #     for data in json_data:
+    #         # print(len(data["lineup"]))
+    #         for i in range(len(data["lineup"])):
+    #             print (data["lineup"][i]["player_name"], len(data["lineup"][i]["positions"]))
+
     statements = []
     for data in json_data:
         statements += (generate_insert_statement_events("events", data, os.path.splitext(file_path)[0])) # Replace 'YourTableName' with your actual table name
@@ -687,11 +713,30 @@ def convert_json_to_sql_events(file_path):
 
 
 sql_statements = []
-directory = "../statsbomb_data/events/"
+directory = "../statsbomb_data/lineups/"
 files = os.listdir(directory)
 
+matches = []
+with open(f"../statsbomb_data/matches/11/90.json", 'r', encoding='utf-8') as file:
+    json_data = json.load(file)
+    for data in json_data:
+        matches.append(data["match_id"])
+
+
+player = {}
 for file in files:
-    sql_statements += convert_json_to_sql_events(file)
+    sql_statements += convert_json_to_sql_events(file, player)
+    break
+
+# for match in matches:
+#     sql_statements += convert_json_to_sql_events(match, player)
+#     break
+
+
+# sorted_items = sorted(player.items(), key=lambda x: x[1], reverse=True)
+# sorted_dict = dict(sorted_items)
+# for play in player:
+#     print(play, player[play])
 
 #sql_statements += convert_json_to_sql_events("303473.json") #just to test
 print(len(sql_statements))
