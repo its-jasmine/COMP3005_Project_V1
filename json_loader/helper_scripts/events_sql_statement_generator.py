@@ -126,11 +126,11 @@ def generate_insert_statement_events(table_name, data, match_id):
     #     except KeyError:
     #         generate_insert_statement_substitution(data["stta"], data["id"])
 
-    # if data["type"]["name"] == "Starting XI":
-    #     generate_insert_statement_starting_xi(data["tactics"], data["id"])
+    if data["type"]["name"] == "Starting XI":
+        generate_insert_statement_starting_xi(data["tactics"], data["id"])
 
-    # if data["type"]["name"] == "Tactical Shift":
-    #     generate_insert_statement_tactical_shift(data["tactics"], data["id"])
+    if data["type"]["name"] == "Tactical Shift":
+        generate_insert_statement_tactical_shift(data["tactics"], data["id"])
 
     # id = data["id"]
     # if data.get('type')['name'] == "Clearance":
@@ -726,7 +726,6 @@ with open(f"../statsbomb_data/matches/11/90.json", 'r', encoding='utf-8') as fil
 player = {}
 for file in files:
     sql_statements += convert_json_to_sql_events(file, player)
-    break
 
 # for match in matches:
 #     sql_statements += convert_json_to_sql_events(match, player)
@@ -743,23 +742,23 @@ print(len(sql_statements))
 sql_statements = list(set(sql_statements)) # deduplicate
 print(len(sql_statements))
 
-fourth = round(len(sql_statements) / 4)
-for statement in sql_statements[:fourth]:
-    with open("../insert_statements/events1.sql", "a", encoding='utf-8') as file:
-        statement = statement.replace("None", "NULL")
-        file.write(statement + "\n")
-for statement in sql_statements[fourth:fourth*2]:
-    with open("../insert_statements/events2.sql", "a", encoding='utf-8') as file:
-        statement = statement.replace("None", "NULL")
-        file.write(statement + "\n")
-for statement in sql_statements[fourth*2:fourth*3]:
-    with open("../insert_statements/events3.sql", "a", encoding='utf-8') as file:
-        statement = statement.replace("None", "NULL")
-        file.write(statement + "\n")
-for statement in sql_statements[fourth*3:]:
-    with open("../insert_statements/events4.sql", "a", encoding='utf-8') as file:
-        statement = statement.replace("None", "NULL")
-        file.write(statement + "\n")
+# fourth = round(len(sql_statements) / 4)
+# for statement in sql_statements[:fourth]:
+#     with open("../insert_statements/events1.sql", "a", encoding='utf-8') as file:
+#         statement = statement.replace("None", "NULL")
+#         file.write(statement + "\n")
+# for statement in sql_statements[fourth:fourth*2]:
+#     with open("../insert_statements/events2.sql", "a", encoding='utf-8') as file:
+#         statement = statement.replace("None", "NULL")
+#         file.write(statement + "\n")
+# for statement in sql_statements[fourth*2:fourth*3]:
+#     with open("../insert_statements/events3.sql", "a", encoding='utf-8') as file:
+#         statement = statement.replace("None", "NULL")
+#         file.write(statement + "\n")
+# for statement in sql_statements[fourth*3:]:
+#     with open("../insert_statements/events4.sql", "a", encoding='utf-8') as file:
+#         statement = statement.replace("None", "NULL")
+#         file.write(statement + "\n")
     
 
 

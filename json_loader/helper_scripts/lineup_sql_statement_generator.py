@@ -39,7 +39,7 @@ def insert_statements_lineup(data, match_id):
         values.append(player["player_id"])
         columns_str = ', '.join(columns_names) 
         values_str = ', '.join(map(repr, values))
-        statement = f"INSERT INTO lineup ({columns_str}) VALUES ({values_str})"  + " ON CONFLICT (match_id, team_id) DO NOTHING;"
+        statement = f"INSERT INTO lineups ({columns_str}) VALUES ({values_str})"  + " ON CONFLICT (match_id, team_id) DO NOTHING;"
         statement = statement.replace("None", "NULL")
         statements.append(statement)
         values.pop()

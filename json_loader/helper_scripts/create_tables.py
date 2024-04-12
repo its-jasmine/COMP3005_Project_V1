@@ -15,7 +15,7 @@ def generate_create_statement_lineups():
             "player_id                 INTEGER NOT NULL,  \n" \
             "PRIMARY KEY (match_id, team_id),  \n" \
             "FOREIGN KEY (match_id) REFERENCES matches(match_id),  \n" \
-            "FOREIGN KEY (team_od) REFERENCES teams(team_id),  \n" \
+            "FOREIGN KEY (team_id) REFERENCES teams(team_id),  \n" \
             "FOREIGN KEY (player_id) REFERENCES players(player_id) );"
 
 
@@ -34,7 +34,7 @@ def generate_create_statement_position():
             "end_reason                VARCHAR(255) NOT NULL,  \n" \
             "PRIMARY KEY (match_id, team_id), \n" \
             "FOREIGN KEY (match_id) REFERENCES matches(match_id),  \n" \
-            "FOREIGN KEY (team_od) REFERENCES teams(team_id),  \n" \
+            "FOREIGN KEY (team_id) REFERENCES teams(team_id),  \n" \
             "FOREIGN KEY (player_id) REFERENCES players(player_id) );"
 
 def generate_create_statement_pass():
@@ -203,19 +203,37 @@ def generate_create_statement_substitution():
 
 def generate_create_statement_starting_xi():
     return "CREATE TABLE IF NOT EXISTS starting_xi \n" \
-            "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-            "formation    INTEGER,  \n" \
-            "lineup_id    INTEGER,  \n" \
-            "FOREIGN KEY (event_id) REFERENCES events(event_id),  \n" \
-            "FOREIGN KEY (lineup_id) REFERENCES lineups(lineup_id));"
+            "(event_id              VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "formation                  INTEGER,  \n" \
+            "goalkeeper                 INTEGER,  \n" \
+            "right_back                 INTEGER,  \n" \
+            "right_center_back          INTEGER,  \n" \
+            "left_center_back           INTEGER,  \n" \
+            "left_back                  INTEGER,  \n" \
+            "right_defensive_midfield   INTEGER,  \n" \
+            "left_defensive_midfield    INTEGER,  \n" \
+            "right_midfield             INTEGER,  \n" \
+            "left_midfield              INTEGER,  \n" \
+            "right_center_forward       INTEGER,  \n" \
+            "left_center_forward        INTEGER,  \n" \
+            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
 
 def generate_create_statement_tactical_shift():
     return "CREATE TABLE IF NOT EXISTS tactical_shift \n" \
-            "(event_id    VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
-            "formation    INTEGER,  \n" \
-            "lineup_id    INTEGER,  \n" \
-            "FOREIGN KEY (event_id) REFERENCES events(event_id),  \n" \
-            "FOREIGN KEY (lineup_id) REFERENCES lineups(lineup_id));"
+            "(event_id              VARCHAR(255) NOT NULL PRIMARY KEY, \n" \
+            "formation                  INTEGER,  \n" \
+            "goalkeeper                 INTEGER,  \n" \
+            "right_back                 INTEGER,  \n" \
+            "right_center_back          INTEGER,  \n" \
+            "left_center_back           INTEGER,  \n" \
+            "left_back                  INTEGER,  \n" \
+            "right_defensive_midfield   INTEGER,  \n" \
+            "left_defensive_midfield    INTEGER,  \n" \
+            "right_midfield             INTEGER,  \n" \
+            "left_midfield              INTEGER,  \n" \
+            "right_center_forward       INTEGER,  \n" \
+            "left_center_forward        INTEGER,  \n" \
+            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
 
 def generate_create_statement_50_50():
     return "CREATE TABLE IF NOT EXISTS fifty_fifty \n" \
