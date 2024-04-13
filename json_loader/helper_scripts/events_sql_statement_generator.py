@@ -1,7 +1,6 @@
 import json
 import os
 
-
 columns_names = keys = [
     "event_id",
     "match_id",
@@ -111,8 +110,6 @@ def generate_insert_statement_events(table_name, data, match_id):
 
     if "pass" in data_keys:
         generate_insert_statement_pass(data["pass"], data["id"])
-    
-    # Not including Player Off and Half End tables as none of their attributes have values
         
     if "carry" in data_keys:
         generate_insert_statement_carry(data["carry"], data["id"])
@@ -313,10 +310,10 @@ def generate_insert_statement_50_50(data, event_id):
     columns_names = ["event_id", "outcome", "counterpress"]
     values = []
     values.append(event_id)
-    values.append(data["50_50"]["outcome"]["name"]) # just including name rather than id
+    values.append(data["50_50"]["outcome"]["name"])
 
     try:
-        values.append(data["counterpress"]) #TODO docs mention this, but most objects don't seem to have it? setting as NULL for now
+        values.append(data["counterpress"])
     except KeyError:
         values.append(None)
 
@@ -338,7 +335,7 @@ def generate_insert_statement_block(data, event_id):
         except KeyError:
             values.append(None)
     try:
-        values.append(data["counterpress"])  # TODO docs mention this, but most objects don't seem to have it? setting as NULL for now
+        values.append(data["counterpress"])
     except KeyError:
         values.append(None)
 
@@ -549,7 +546,6 @@ def generate_insert_statement_duel(data, id):
         file.write(statement + "\n")
 
 def generate_insert_statement_pass(data, event_id):
-    # removed attributes: "backheel", "cutback",
     columns_names = ["event_id",
                      "recipient_id",
                      "length",
@@ -557,17 +553,17 @@ def generate_insert_statement_pass(data, event_id):
                      "height",
                      "end_location_x",
                      "end_location_y",
-                     "assisted_shot_id", # only a few have a value for this
-                     "deflected", # only a few have a value for this
-                     "miscommunication", # only a few have a value for this
-                     "cross_", # only a few have a value for this
-                     "switch", # only a few have a value for this
-                     "shot_assist", # only a few have a value for this
-                     "goal_assist", # only a few have a value for this
+                     "assisted_shot_id", 
+                     "deflected", 
+                     "miscommunication", 
+                     "cross_", 
+                     "switch", 
+                     "shot_assist", 
+                     "goal_assist", 
                      "body_part",
-                     "type", # only a few have a value for this
-                     "outcome", # only a few have a value for this
-                     "technique", # only a few have a value for this
+                     "type", 
+                     "outcome", 
+                     "technique", 
                      "through_ball"
                      ]
     values = []
@@ -622,6 +618,7 @@ for file in files:
 
 sql_statements = list(set(sql_statements)) # deduplicate
 
+# separated events into 4 files because of space
 fourth = round(len(sql_statements) / 4)
 for statement in sql_statements[:fourth]:
     with open("../insert_statements/events1.sql", "a", encoding='utf-8') as file:

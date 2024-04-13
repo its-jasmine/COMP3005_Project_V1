@@ -9,32 +9,15 @@ def download_file(url, file_path):
     else:
         print(f"Failed to download file: {url}")
 
-# URL of the raw file
-
-"""
-match_id = 15946
-file_url = f'https://raw.githubusercontent.com/statsbomb/open-data/0067cae166a56aa80b2ef18f61e16158d6a7359a/data/events/{match_id}.json'
-
-# Local path where you want to save the file
-local_file_path = f'statsbomb_data/events/{match_id}.json'
-
-# Download the file
-download_file(file_url, local_file_path)
-"""
-
 def main():
     file_path = 'output'
 
     with open(file_path, 'r') as file:
-        file.seek(0)  # Move the file pointer back to the beginning
+        file.seek(0)  
         for line in file:
-
-            match_id = line.strip() # strip() removes the newline character at the end of each line
+            match_id = line.strip()
             file_url = f'https://raw.githubusercontent.com/statsbomb/open-data/0067cae166a56aa80b2ef18f61e16158d6a7359a/data/lineups/{match_id}.json'
-            # Local path where you want to save the file
             local_file_path = f'../statsbomb_data/lineups/{match_id}.json'
-
-            # Download the file
             download_file(file_url, local_file_path)
 
 

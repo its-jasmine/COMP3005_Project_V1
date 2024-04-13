@@ -36,12 +36,12 @@ def convert_json_to_sql(file_path):
 
     statements = []
     for row in json_data:
-        if row.get('home_team') and row.get('home_team').get('managers'): # some teams don't have managers listed
+        if row.get('home_team') and row.get('home_team').get('managers'):
             data = {}
             data['team_id'] = row.get('home_team')["home_team_id"]
             data["managers"] = row.get('home_team')["managers"]
             statements += (generate_insert_statement("managers", data))
-        if row.get('away_team') and row.get('away_team').get('managers'): # some teams don't have managers listed
+        if row.get('away_team') and row.get('away_team').get('managers'):
             data = {}
             data['team_id'] = row.get('away_team')["away_team_id"]
             data["managers"] = row.get('away_team')["managers"]
@@ -51,7 +51,6 @@ def convert_json_to_sql(file_path):
 
 
 sql_statements = []
-# sql_statements.append(generate_create_statement())
 
 sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/2/44.json")
 sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/11/4.json")

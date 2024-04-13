@@ -50,7 +50,6 @@ def convert_json_to_sql(file_path):
 
 
 sql_statements = []
-#sql_statements.append(generate_create_statement())
 
 sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/2/44.json")
 sql_statements += convert_json_to_sql(f"../statsbomb_data/matches/11/4.json")
