@@ -23,14 +23,10 @@ Directory that stores source code that maps and loads JSON files into the DB
 ### queries.py
 - queries 1-10
 
-## Bonus Demo
-
 ## Entity Relationship Diagram
-
-![image](https://github.com/its-jasmine/COMP3005_Project_V1/assets/84146479/a9b042f9-1e75-4ccd-9064-e138b86b630a)
+![image](https://github.com/its-jasmine/COMP3005_Project_V1/assets/84146479/562f5537-6c39-4470-b714-a341cbc24895)
 
 ## Database Schema Diagram
-
-![image](https://github.com/its-jasmine/COMP3005_Project_V1/assets/84146479/6236dba7-2efd-47f9-94d4-f601333fbc2f)
+![image](https://github.com/its-jasmine/COMP3005_Project_V1/assets/84146479/b75f2de5-b21c-4cd6-be51-9bae34dcffd4)
 
 
