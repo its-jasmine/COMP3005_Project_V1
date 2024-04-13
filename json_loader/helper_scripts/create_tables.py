@@ -216,7 +216,18 @@ def generate_create_statement_starting_xi():
             "left_midfield              INTEGER,  \n" \
             "right_center_forward       INTEGER,  \n" \
             "left_center_forward        INTEGER,  \n" \
-            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
+            "FOREIGN KEY (event_id) REFERENCES events(event_id),  \n" \
+            "FOREIGN KEY (goalkeeper) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (right_back) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (right_center_back) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (left_center_back) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (left_back) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (right_defensive_midfield) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (left_defensive_midfield) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (right_midfield) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (left_midfield) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (right_center_forward) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (left_center_forward) REFERENCES players(player_id));"
 
 def generate_create_statement_tactical_shift():
     return "CREATE TABLE IF NOT EXISTS tactical_shift \n" \
@@ -233,7 +244,18 @@ def generate_create_statement_tactical_shift():
             "left_midfield              INTEGER,  \n" \
             "right_center_forward       INTEGER,  \n" \
             "left_center_forward        INTEGER,  \n" \
-            "FOREIGN KEY (event_id) REFERENCES events(event_id));"
+            "FOREIGN KEY (event_id) REFERENCES events(event_id),  \n" \
+            "FOREIGN KEY (goalkeeper) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (right_back) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (right_center_back) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (left_center_back) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (left_back) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (right_defensive_midfield) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (left_defensive_midfield) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (right_midfield) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (left_midfield) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (right_center_forward) REFERENCES players(player_id),  \n" \
+            "FOREIGN KEY (left_center_forward) REFERENCES players(player_id));"
 
 def generate_create_statement_50_50():
     return "CREATE TABLE IF NOT EXISTS fifty_fifty \n" \
