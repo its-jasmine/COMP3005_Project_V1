@@ -23,6 +23,9 @@ Directory that stores source code that maps and loads JSON files into the DB
 ### queries.py
 - queries 1-10
 
+## Bonus Demo
+https://mediaspace.carleton.ca/media/COMP+3005+Bonus+Demo/1_g0vm8fak 
+
 ## Entity Relationship Diagram
 ![image](https://github.com/its-jasmine/COMP3005_Project_V1/assets/84146479/562f5537-6c39-4470-b714-a341cbc24895)
 
