@@ -28,10 +28,7 @@ Directory that stores source code that maps and loads JSON files into the DB
 ## Entity Relationship Diagram
 ![image](https://github.com/its-jasmine/COMP3005_Project_V1/assets/84146479/000c5255-bac0-4bfd-a530-6259afdc07b0)
 
-![image](https://github.com/its-jasmine/COMP3005_Project_V1/assets/84146479/a9b042f9-1e75-4ccd-9064-e138b86b630a)
-
 ## Database Schema Diagram
-
-![image](https://github.com/its-jasmine/COMP3005_Project_V1/assets/84146479/6236dba7-2efd-47f9-94d4-f601333fbc2f)
+![image](https://github.com/its-jasmine/COMP3005_Project_V1/assets/84146479/b75f2de5-b21c-4cd6-be51-9bae34dcffd4)
 
 
